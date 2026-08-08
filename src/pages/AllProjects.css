@@ -74,6 +74,11 @@
   align-items: start;
 }
 
+/* Fix CSS grid blowout */
+.ap-main {
+  min-width: 0;
+}
+
 /* Tabs */
 .ap-tabs {
   display: flex;
