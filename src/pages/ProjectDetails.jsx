@@ -46,9 +46,6 @@ export default function ProjectDetails() {
             <p className="pd-subtitle">Things I've built with passion and purpose</p>
           </div>
         </div>
-        <Link to="/all-projects" className="pd-header-btn">
-          View All Other Projects <ArrowRight size={16} />
-        </Link>
       </div>
 
       {/* Hero Section */}

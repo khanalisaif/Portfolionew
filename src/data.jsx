@@ -23,7 +23,7 @@ export const orbitCards = [
     position: "top-left",
     items: ["Google Certified", "Meta Certified", "Udemy Certificates"],
     viewAllLabel: "View all certificates",
-    viewAllUrl: "#certificates",
+    viewAllUrl: "/all-education",
   },
   {
     id: "networks",
@@ -34,7 +34,7 @@ export const orbitCards = [
     position: "top-right",
     items: ["LinkedIn", "GitHub", "Twitter"],
     viewAllLabel: "View all networks",
-    viewAllUrl: "#networks",
+    viewAllUrl: "/#network",
   },
   {
     id: "skills",
@@ -45,7 +45,7 @@ export const orbitCards = [
     position: "mid-left",
     items: ["Kotlin", "Android", "Jetpack Compose"],
     viewAllLabel: "View all skills",
-    viewAllUrl: "#skills",
+    viewAllUrl: "/all-skills",
   },
   {
     id: "achievements",
@@ -56,7 +56,7 @@ export const orbitCards = [
     position: "mid-right",
     items: ["Top Performer 2023", "Hackathon Winner", "100+ Projects"],
     viewAllLabel: "View all achievements",
-    viewAllUrl: "#achievements",
+    viewAllUrl: "/all-education",
   },
   {
     id: "projects",
@@ -67,7 +67,7 @@ export const orbitCards = [
     position: "bot-left",
     items: ["12 Android Apps", "4 Live Products", "2 SaaS Products"],
     viewAllLabel: "View all projects",
-    viewAllUrl: "#projects",
+    viewAllUrl: "/all-projects",
   },
   {
     id: "strength",
@@ -78,7 +78,7 @@ export const orbitCards = [
     position: "bot-right",
     items: ["Problem Solving", "Team Player", "Fast Learner"],
     viewAllLabel: "View all strengths",
-    viewAllUrl: "#strengths",
+    viewAllUrl: "/all-skills",
   },
 ];
 
@@ -86,7 +86,7 @@ export const orbitCards = [
 export const educationData = {
   sectionTitle: "Education",
   sectionSubtitle: "My academic background and achievements",
-  viewAllUrl: "#education",
+  viewAllUrl: "/all-education",
   entries: [
     {
       id: "lpu",
@@ -122,9 +122,9 @@ export const educationData = {
 
 // Skills Section
 export const skillsData = {
-  sectionTitle: "Skills",
-  sectionSubtitle: "Technologies and tools I work with to bring ideas to life",
-  viewAllUrl: "#skills",
+  sectionTitle: "Skills & Expertise",
+  sectionSubtitle: "Technologies and tools I work with",
+  viewAllUrl: "/all-skills",
   technicalSkills: [
     {
       id: "kotlin",
@@ -256,9 +256,9 @@ export const skillsData = {
 
 // Projects Section
 export const projectsData = {
-  sectionTitle: "Projects",
-  sectionSubtitle: "A showcase of what I have built",
-  viewAllUrl: "#projects",
+  sectionTitle: "Featured Projects",
+  sectionSubtitle: "Things I've built with passion and purpose",
+  viewAllUrl: "/all-projects",
   featured: [
     {
       id: "digivahan",

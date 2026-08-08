@@ -33,7 +33,7 @@ export default function ProjectsSection() {
               <div className="section-subtitle">{sectionSubtitle}</div>
             </div>
           </div>
-          <Link to="/all-projects" className="section-view-all" id="projects-view-all">
+          <Link to="/all-projects" className="section-view-all view-all-desktop" id="projects-view-all">
             View All Projects <ChevronRight size={14} />
           </Link>
         </div>
@@ -103,6 +103,11 @@ export default function ProjectsSection() {
             </div>
           );
         })}
+
+        {/* Mobile View All Link at the bottom */}
+        <Link to="/all-projects" className="section-view-all view-all-mobile" id="projects-view-all-mobile">
+          View All Projects <ChevronRight size={14} />
+        </Link>
       </div>
     </section>
   );

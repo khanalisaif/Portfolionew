@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Users, Globe, Server, Search, Cloud, Smartphone } from 'lucide-react';
 import { networkData, profileData } from '../data';
 import { useFadeUp } from '../hooks/useFadeUp';
@@ -25,6 +26,18 @@ function polarToXY(angleDeg, radius, cx, cy) {
 export default function NetworkSection() {
   const ref = useFadeUp();
   const { sectionTitle, sectionSubtitle, centerLabel, centerSubLabel, centerAvatar, connections } = networkData;
+  const [scale, setScale] = useState(1);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const w = window.innerWidth;
+      // 1000 is the design width for the network section.
+      setScale(w < 1000 ? Math.max(0.3, (w - 40) / 1000) : 1);
+    };
+    window.addEventListener('resize', handleResize);
+    handleResize();
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // SVG canvas dimensions (make it large enough to fit everything)
   const W = 1000;
@@ -58,14 +71,14 @@ export default function NetworkSection() {
         </div>
 
         {/* Network Graph Container (Card Style) */}
-        <div className="network-card" style={{
+        <div className="network-card network-desktop-view" style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          minHeight: 650,
+          minHeight: H,
           position: 'relative',
         }}>
-          <div style={{ position: 'relative', zIndex: 1, width: W, maxWidth: '100%' }}>
+          <div style={{ position: 'relative', zIndex: 1, width: W, maxWidth: '100%', height: H }}>
             <svg
               viewBox={`0 0 ${W} ${H}`}
               style={{ width: '100%', height: 'auto', display: 'block' }}
@@ -234,6 +247,98 @@ export default function NetworkSection() {
                 );
               })}
             </svg>
+          </div>
+        </div>
+
+        {/* --- MOBILE VIEW --- */}
+        <div className="network-mobile-view">
+
+          {/* ── Center "Me" with orbit ring — matching hero mobile style ── */}
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+            <div style={{ position: 'relative', width: 180, height: 180 }}>
+              <svg viewBox="0 0 180 180" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', overflow: 'visible' }}>
+                <defs>
+                  <radialGradient id="net-mob-grad" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stopColor="#ede9fe" />
+                    <stop offset="55%" stopColor="#ddd6fe" />
+                    <stop offset="100%" stopColor="#c4b5fd" />
+                  </radialGradient>
+                  <filter id="net-mob-glow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="5" result="blur" />
+                    <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                  </filter>
+                  <clipPath id="net-mob-clip">
+                    <circle cx="90" cy="90" r="68" />
+                  </clipPath>
+                </defs>
+                <circle cx="90" cy="90" r="84" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="8" filter="url(#net-mob-glow)" />
+                <circle cx="90" cy="90" r="78" fill="url(#net-mob-grad)" className="profile-ring-anim" />
+                <circle cx="90" cy="90" r="71" fill="white" />
+                <image href={centerAvatar} x="22" y="22" width="136" height="136" clipPath="url(#net-mob-clip)" preserveAspectRatio="xMidYMid slice" />
+                {/* Accent dots */}
+                <circle cx="90" cy="6" r="4" fill="#a855f7" style={{ filter: 'drop-shadow(0 0 4px #a855f7)' }} />
+                <circle cx="174" cy="90" r="4" fill="#6366f1" style={{ filter: 'drop-shadow(0 0 4px #6366f1)' }} />
+                <circle cx="90" cy="174" r="4" fill="#a855f7" style={{ filter: 'drop-shadow(0 0 3px #a855f7)' }} />
+                <circle cx="6" cy="90" r="4" fill="#6366f1" style={{ filter: 'drop-shadow(0 0 3px #6366f1)' }} />
+              </svg>
+            </div>
+            {/* "Me" label card */}
+            <div style={{ background: 'white', borderRadius: 14, padding: '10px 28px', boxShadow: '0 4px 16px rgba(168,85,247,0.1)', border: '1px solid rgba(168,85,247,0.12)', textAlign: 'center' }}>
+              <div style={{ fontSize: 16, fontWeight: 800, color: '#7c3aed' }}>{centerLabel}</div>
+              <div style={{ fontSize: 12, color: '#94a3b8', marginTop: 2 }}>{centerSubLabel}</div>
+            </div>
+          </div>
+
+          {/* Divider label */}
+          <div style={{ fontSize: 11, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.08em', textAlign: 'center', margin: '4px 0' }}>
+            My Network
+          </div>
+
+          {/* Connections — styled like hero orbit cards */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            {connections.map(node => {
+              const SkillIcon = skillIconMap[node.skillIcon] || Globe;
+              return (
+                <div
+                  key={node.id}
+                  style={{
+                    background: 'rgba(255,255,255,0.92)',
+                    backdropFilter: 'blur(16px)',
+                    WebkitBackdropFilter: 'blur(16px)',
+                    borderRadius: 16,
+                    border: '1px solid rgba(255,255,255,0.95)',
+                    padding: '12px 16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 14,
+                    boxShadow: '0 4px 20px rgba(99,102,241,0.07), 0 1px 4px rgba(0,0,0,0.04)',
+                  }}
+                >
+                  {/* Avatar with colored ring */}
+                  <div style={{ position: 'relative', flexShrink: 0 }}>
+                    <img
+                      src={node.avatar}
+                      alt={node.name}
+                      style={{
+                        width: 52, height: 52, borderRadius: '50%',
+                        border: `2.5px solid ${node.ringColor}`,
+                        objectFit: 'cover',
+                        display: 'block',
+                      }}
+                    />
+                  </div>
+                  {/* Info */}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div style={{ fontSize: 14, fontWeight: 700, color: '#0f172a', lineHeight: 1.2 }}>{node.name}</div>
+                    <div style={{ fontSize: 12, color: '#64748b', marginTop: 2, lineHeight: 1.3 }}>{node.role}</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 5, fontSize: 11, fontWeight: 700, color: node.skillColor }}>
+                      <SkillIcon size={12} />
+                      {node.skill}
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

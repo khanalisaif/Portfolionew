@@ -371,6 +371,7 @@
   .ae-edu-stats { flex-wrap: wrap; }
   .ae-edu-stat { min-width: calc(50% - 5px); }
   .ae-edu-degree-row { flex-direction: column; gap: 8px; }
+  .ae-download-btn { width: 100%; justify-content: center; }
 }
 
 /* ===== CERT CAROUSEL SHARED ===== */

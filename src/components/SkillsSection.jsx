@@ -73,7 +73,7 @@ export default function SkillsSection() {
               <div className="section-subtitle">{sectionSubtitle}</div>
             </div>
           </div>
-          <Link to="/all-skills" className="section-view-all" id="skills-view-all">
+          <Link to="/all-skills" className="section-view-all view-all-desktop" id="skills-view-all">
             View All Skills <ChevronRight size={14} />
           </Link>
         </div>
@@ -240,6 +240,11 @@ export default function SkillsSection() {
             ))}
           </div>
         </div>
+
+        {/* Mobile View All Link at the bottom */}
+        <Link to="/all-skills" className="section-view-all view-all-mobile" id="skills-view-all-mobile">
+          View All Skills <ChevronRight size={14} />
+        </Link>
       </div>
     </section>
   );

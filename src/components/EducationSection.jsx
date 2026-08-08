@@ -17,17 +17,6 @@ function CertCarousel({ certificates }) {
     <div className="cert-carousel-wrapper">
       <div className="cert-carousel-header">
         <span className="cert-carousel-title">Certificates from University</span>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <button className="cert-nav-btn" onClick={() => scroll(-1)} id="cert-scroll-left">
-            <ChevronLeft size={14} />
-          </button>
-          <a href="#" className="section-view-all" style={{ fontSize: 12 }}>
-            View All <ChevronRight size={12} />
-          </a>
-          <button className="cert-nav-btn" onClick={() => scroll(1)} id="cert-scroll-right">
-            <ChevronRight size={14} />
-          </button>
-        </div>
       </div>
       <div className="cert-carousel-scroll" ref={scrollRef}>
         {certificates.map((cert, i) => (
@@ -37,6 +26,17 @@ function CertCarousel({ certificates }) {
             <div className="cert-item-year">{cert.year}</div>
           </div>
         ))}
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 16, marginTop: 24 }}>
+        <button className="cert-nav-btn" onClick={() => scroll(-1)} id="cert-scroll-left">
+          <ChevronLeft size={14} />
+        </button>
+        <Link to="/all-education" className="section-view-all" style={{ fontSize: 12 }}>
+          View All <ChevronRight size={12} />
+        </Link>
+        <button className="cert-nav-btn" onClick={() => scroll(1)} id="cert-scroll-right">
+          <ChevronRight size={14} />
+        </button>
       </div>
     </div>
   );
@@ -60,7 +60,7 @@ export default function EducationSection() {
               <div className="section-subtitle">{sectionSubtitle}</div>
             </div>
           </div>
-          <Link to="/all-education" className="section-view-all" id="edu-view-all">
+          <Link to="/all-education" className="section-view-all view-all-desktop" id="edu-view-all">
             View All Education <ChevronRight size={14} />
           </Link>
         </div>
@@ -121,6 +121,11 @@ export default function EducationSection() {
             <CertCarousel certificates={entry.certificates} />
           </div>
         ))}
+
+        {/* Mobile View All Link at the bottom */}
+        <Link to="/all-education" className="section-view-all view-all-mobile" id="edu-view-all-mobile">
+          View All Education <ChevronRight size={14} />
+        </Link>
       </div>
     </section>
   );

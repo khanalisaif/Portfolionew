@@ -60,9 +60,6 @@ export default function AllProjects() {
             <p className="ap-subtitle">Things I've built with passion and purpose</p>
           </div>
         </div>
-        <Link to="/" className="ap-header-btn">
-          View All Other Projects <ArrowRight size={16} />
-        </Link>
       </div>
 
       <div className="ap-layout">
@@ -215,7 +212,7 @@ export default function AllProjects() {
                 </div>
               ))}
             </div>
-            <a href="#" className="ap-view-all-tech">View All Technologies</a>
+            <Link to="/all-skills" className="ap-view-all-tech">View All Technologies</Link>
           </div>
 
           {/* Project Categories */}
