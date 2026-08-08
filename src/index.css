@@ -378,7 +378,7 @@ body {
 }
 
 .view-all-mobile {
-  display: none;
+  display: none !important;
 }
 
 /* ===== NETWORK SECTION ===== */

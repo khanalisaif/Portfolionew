@@ -498,10 +498,12 @@ export default function HeroSection() {
             <circle cx="100" cy="100" r="89" fill="url(#mob-ring-grad)" className="profile-ring-anim" />
             <circle cx="100" cy="100" r="81" fill="white" />
             <image href={avatarUrl} x="22" y="22" width="156" height="156" clipPath="url(#mob-photo-clip)" preserveAspectRatio="xMidYMid slice" />
+          <g style={{ transformOrigin: '100px 100px', animation: 'mobileOrbitSpin 10s linear infinite' }}>
             <circle cx="100" cy="5" r="4.5" fill="#3b82f6" style={{ filter: 'drop-shadow(0 0 4px #3b82f6)' }} />
             <circle cx="195" cy="100" r="4.5" fill="#06b6d4" style={{ filter: 'drop-shadow(0 0 4px #06b6d4)' }} />
             <circle cx="100" cy="195" r="4" fill="#3b82f6" style={{ filter: 'drop-shadow(0 0 3px #3b82f6)' }} />
             <circle cx="5" cy="100" r="4" fill="#06b6d4" style={{ filter: 'drop-shadow(0 0 3px #06b6d4)' }} />
+          </g>
           </svg>
         </div>
 

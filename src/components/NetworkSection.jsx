@@ -276,10 +276,12 @@ export default function NetworkSection() {
                 <circle cx="90" cy="90" r="71" fill="white" />
                 <image href={centerAvatar} x="22" y="22" width="136" height="136" clipPath="url(#net-mob-clip)" preserveAspectRatio="xMidYMid slice" />
                 {/* Accent dots */}
-                <circle cx="90" cy="6" r="4" fill="#a855f7" style={{ filter: 'drop-shadow(0 0 4px #a855f7)' }} />
-                <circle cx="174" cy="90" r="4" fill="#6366f1" style={{ filter: 'drop-shadow(0 0 4px #6366f1)' }} />
-                <circle cx="90" cy="174" r="4" fill="#a855f7" style={{ filter: 'drop-shadow(0 0 3px #a855f7)' }} />
-                <circle cx="6" cy="90" r="4" fill="#6366f1" style={{ filter: 'drop-shadow(0 0 3px #6366f1)' }} />
+                <g style={{ transformOrigin: '90px 90px', animation: 'mobileOrbitSpin 10s linear infinite' }}>
+                  <circle cx="90" cy="6" r="4" fill="#a855f7" style={{ filter: 'drop-shadow(0 0 4px #a855f7)' }} />
+                  <circle cx="174" cy="90" r="4" fill="#6366f1" style={{ filter: 'drop-shadow(0 0 4px #6366f1)' }} />
+                  <circle cx="90" cy="174" r="3.5" fill="#a855f7" style={{ filter: 'drop-shadow(0 0 3px #a855f7)' }} />
+                  <circle cx="6" cy="90" r="3.5" fill="#6366f1" style={{ filter: 'drop-shadow(0 0 3px #6366f1)' }} />
+                </g>
               </svg>
             </div>
             {/* "Me" label card */}

@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Search, Rocket, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Search, Rocket, ArrowRight, ChevronDown } from 'lucide-react';
 import { allSkillsCategories, allSkillsDetailed } from '../data';
 import './AllSkills.css';
 
 export default function AllSkills() {
   const [activeCategory, setActiveCategory] = useState(allSkillsCategories[0].id);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showAllMobileCategories, setShowAllMobileCategories] = useState(false);
 
   // Filter categories by search
   const filteredCategories = searchQuery
@@ -55,10 +56,10 @@ export default function AllSkills() {
         <div className="skills-sidebar-nav">
           <div className="sidebar-nav-title">SKILL CATEGORIES</div>
           <div className="category-list">
-            {filteredCategories.map(cat => (
+            {filteredCategories.map((cat, idx) => (
               <button
                 key={cat.id}
-                className={`category-item ${activeCategory === cat.id ? 'active' : ''}`}
+                className={`category-item ${activeCategory === cat.id ? 'active' : ''} ${!showAllMobileCategories && idx >= 3 ? 'hide-on-mobile' : ''}`}
                 onClick={() => setActiveCategory(cat.id)}
               >
                 <div className="category-item-left">
@@ -69,6 +70,15 @@ export default function AllSkills() {
               </button>
             ))}
           </div>
+          {filteredCategories.length > 3 && (
+            <button 
+              className="show-more-mobile-btn"
+              onClick={() => setShowAllMobileCategories(!showAllMobileCategories)}
+            >
+              {showAllMobileCategories ? 'Show Less' : 'Show All Categories'} 
+              <ChevronDown size={14} style={{ transform: showAllMobileCategories ? 'rotate(180deg)' : 'none', transition: '0.2s' }} />
+            </button>
+          )}
         </div>
 
         {/* Right Content */}
