@@ -641,6 +641,9 @@
 
 @media (max-width: 640px) {
   .all-projects-page { padding: 16px; }
+  .ap-tabs { flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 24px; border-bottom: none; overflow: visible; }
+  .ap-tab { padding: 8px 16px; border: 1px solid #e2e8f0; border-radius: 20px; font-size: 12px; }
+  .ap-tab.active { background: #eef2ff; border-color: var(--primary); }
   .ap-stats { gap: 12px; flex-wrap: wrap; }
   .ap-card-footer { flex-direction: column; align-items: flex-start; gap: 12px; }
   .ap-card-actions { width: 100%; flex-direction: column; }

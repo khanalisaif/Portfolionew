@@ -9,6 +9,7 @@ import AllEducation from './pages/AllEducation';
 import AllSkills from './pages/AllSkills';
 import AllProjects from './pages/AllProjects';
 import ProjectDetails from './pages/ProjectDetails';
+import ScrollToTop from './components/ScrollToTop';
 
 function Home() {
   return (
@@ -24,12 +25,15 @@ function Home() {
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<Home />} />
-      <Route path="/all-education" element={<AllEducation />} />
-      <Route path="/all-skills" element={<AllSkills />} />
-      <Route path="/all-projects" element={<AllProjects />} />
-      <Route path="/project/:id" element={<ProjectDetails />} />
-    </Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/all-education" element={<AllEducation />} />
+        <Route path="/all-skills" element={<AllSkills />} />
+        <Route path="/all-projects" element={<AllProjects />} />
+        <Route path="/project/:id" element={<ProjectDetails />} />
+      </Routes>
+    </>
   );
 }
