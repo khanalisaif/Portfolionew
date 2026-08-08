@@ -146,6 +146,16 @@ body {
   }
 }
 
+/* Mobile Orbit Spin */
+@keyframes mobileOrbitSpin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 /* Card gentle float (each card has staggered delay via inline style) */
 @keyframes cardFloat {
 
