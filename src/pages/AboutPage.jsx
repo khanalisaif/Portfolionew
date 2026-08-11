@@ -12,13 +12,13 @@ import './AboutPage.css';
 
 const AndroidIcon = ({ size = 20, style }) => (
   <svg width={size} height={size} style={style} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M17.523 15.3414ZM17.9155 8.79092C15.8286 7.64019 13.4357 7 11.9961 7C10.5566 7 8.16377 7.64019 6.0769 8.79092L4.62933 6.27092C4.42974 5.92215 3.9857 5.79562 3.63937 5.99264C3.29305 6.18967 3.17066 6.63474 3.37025 6.98351L4.84651 9.55397C2.10271 11.2335 0.222718 14.1504 0 17.518H23.9923C23.7696 14.1504 21.8896 11.2335 19.1458 9.55397L20.622 6.98351C20.8216 6.63474 20.6993 6.18967 20.3529 5.99264C20.0066 5.79562 19.5626 5.92215 19.363 6.27092L17.9155 8.79092ZM6.44299 15.3414C5.69805 15.3414 5.09337 14.7367 5.09337 13.9918C5.09337 13.2468 5.69805 12.6421 6.44299 12.6421C7.18793 12.6421 7.79261 13.2468 7.79261 13.9918C7.79261 14.7367 7.18793 15.3414 6.44299 15.3414ZM17.5492 15.3414C16.8043 15.3414 16.1996 14.7367 16.1996 13.9918C16.1996 13.2468 16.8043 12.6421 17.5492 12.6421C18.2942 12.6421 18.8989 13.2468 18.8989 13.9918C18.8989 14.7367 18.2942 15.3414 17.5492 15.3414Z"/>
+    <path d="M17.523 15.3414ZM17.9155 8.79092C15.8286 7.64019 13.4357 7 11.9961 7C10.5566 7 8.16377 7.64019 6.0769 8.79092L4.62933 6.27092C4.42974 5.92215 3.9857 5.79562 3.63937 5.99264C3.29305 6.18967 3.17066 6.63474 3.37025 6.98351L4.84651 9.55397C2.10271 11.2335 0.222718 14.1504 0 17.518H23.9923C23.7696 14.1504 21.8896 11.2335 19.1458 9.55397L20.622 6.98351C20.8216 6.63474 20.6993 6.18967 20.3529 5.99264C20.0066 5.79562 19.5626 5.92215 19.363 6.27092L17.9155 8.79092ZM6.44299 15.3414C5.69805 15.3414 5.09337 14.7367 5.09337 13.9918C5.09337 13.2468 5.69805 12.6421 6.44299 12.6421C7.18793 12.6421 7.79261 13.2468 7.79261 13.9918C7.79261 14.7367 7.18793 15.3414 6.44299 15.3414ZM17.5492 15.3414C16.8043 15.3414 16.1996 14.7367 16.1996 13.9918C16.1996 13.2468 16.8043 12.6421 17.5492 12.6421C18.2942 12.6421 18.8989 13.2468 18.8989 13.9918C18.8989 14.7367 18.2942 15.3414 17.5492 15.3414Z" />
   </svg>
 );
 
 const AppleIcon = ({ size = 20, style }) => (
   <svg width={size} height={size} style={style} viewBox="0 0 24 24" fill="currentColor">
-    <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.56-1.702z"/>
+    <path d="M12.152 6.896c-.948 0-2.415-1.078-3.96-1.04-2.04.027-3.91 1.183-4.961 3.014-2.117 3.675-.546 9.103 1.519 12.09 1.013 1.454 2.208 3.09 3.792 3.039 1.52-.065 2.09-.987 3.935-.987 1.831 0 2.35.987 3.96.948 1.637-.026 2.676-1.48 3.676-2.948 1.156-1.688 1.636-3.325 1.662-3.415-.039-.013-3.182-1.221-3.22-4.857-.026-3.04 2.48-4.494 2.597-4.559-1.429-2.09-3.623-2.324-4.39-2.376-2-.156-3.675 1.09-4.61 1.09zM15.53 3.83c.843-1.012 1.4-2.427 1.245-3.83-1.207.052-2.662.805-3.532 1.818-.78.896-1.454 2.338-1.273 3.714 1.338.104 2.715-.688 3.56-1.702z" />
   </svg>
 );
 
@@ -359,14 +359,20 @@ export default function AboutPage() {
                 <svg viewBox="0 0 24 24" fill="currentColor"><path d="M24 5.457v13.909c0 .904-.732 1.636-1.636 1.636h-3.819V11.73L12 16.64l-6.545-4.91v9.273H1.636A1.636 1.636 0 0 1 0 19.366V5.457c0-2.023 2.309-3.178 3.927-1.964L5.455 4.64 12 9.548l6.545-4.91 1.528-1.145C21.69 2.28 24 3.434 24 5.457z" /></svg>
               </a>
               <a href={profileData.socialLinks?.whatsapp || "#"} className="ap-social-btn wa">
-                <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.878-.788-1.47-1.761-1.643-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.878-.788-1.47-1.761-1.643-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" /></svg>
               </a>
             </div>
 
+            {/* Mobile orbit cards */}
+            {isMobile && (
+              <div className="ap-mob-orbit">
+                {orbitCards.map(card => <MobOrbitCard key={card.id} card={card} />)}
+              </div>
+            )}
           </div>
 
           {/* RIGHT — orbit */}
-          <div className="ap-orbit-col" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="ap-orbit-col" style={{ display: isMobile ? 'none' : 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <div style={{
               position: 'relative',
               width: SW, height: SH,
@@ -380,53 +386,53 @@ export default function AboutPage() {
               >
                 <defs>
                   <radialGradient id="ap-ring-grad" cx="50%" cy="50%" r="50%">
-                  <stop offset="0%" stopColor="#e0e7ff" />
-                  <stop offset="55%" stopColor="#ddd6fe" />
-                  <stop offset="100%" stopColor="#bae6fd" />
-                </radialGradient>
-                <filter id="ap-ring-glow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feGaussianBlur stdDeviation="8" result="blur" />
-                  <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
-                </filter>
-                <clipPath id="ap-photo-clip"><circle cx={CX} cy={CY} r={PR} /></clipPath>
-                <path id="ap-op" d={ORBIT_PATH} fill="none" />
-              </defs>
+                    <stop offset="0%" stopColor="#e0e7ff" />
+                    <stop offset="55%" stopColor="#ddd6fe" />
+                    <stop offset="100%" stopColor="#bae6fd" />
+                  </radialGradient>
+                  <filter id="ap-ring-glow" x="-20%" y="-20%" width="140%" height="140%">
+                    <feGaussianBlur stdDeviation="8" result="blur" />
+                    <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                  </filter>
+                  <clipPath id="ap-photo-clip"><circle cx={CX} cy={CY} r={PR} /></clipPath>
+                  <path id="ap-op" d={ORBIT_PATH} fill="none" />
+                </defs>
 
-              {/* orbit ring */}
-              <circle cx={CX} cy={CY} r={OR} fill="none" stroke="rgba(148,163,184,0.25)" strokeWidth={1} />
+                {/* orbit ring */}
+                <circle cx={CX} cy={CY} r={OR} fill="none" stroke="rgba(148,163,184,0.25)" strokeWidth={1} />
 
-              {/* static dots */}
-              {ringDots.map(({ angle, color, r }) => {
-                const [dx, dy] = xyOf(angle);
-                return <circle key={angle} cx={dx} cy={dy} r={r} fill={color} style={{ filter: `drop-shadow(0 0 4px ${color})` }} />;
-              })}
+                {/* static dots */}
+                {ringDots.map(({ angle, color, r }) => {
+                  const [dx, dy] = xyOf(angle);
+                  return <circle key={angle} cx={dx} cy={dy} r={r} fill={color} style={{ filter: `drop-shadow(0 0 4px ${color})` }} />;
+                })}
 
-              {/* animated dots */}
-              <circle r={6.5} fill="#6366f1" opacity={0.80} style={{ filter: 'drop-shadow(0 0 5px #6366f1)' }}>
-                <animateMotion dur="9s" repeatCount="indefinite"><mpath href="#ap-op" /></animateMotion>
-              </circle>
-              <circle r={5} fill="#06b6d4" opacity={0.70} style={{ filter: 'drop-shadow(0 0 4px #06b6d4)' }}>
-                <animateMotion dur="9s" begin="-4.5s" repeatCount="indefinite"><mpath href="#ap-op" /></animateMotion>
-              </circle>
+                {/* animated dots */}
+                <circle r={6.5} fill="#6366f1" opacity={0.80} style={{ filter: 'drop-shadow(0 0 5px #6366f1)' }}>
+                  <animateMotion dur="9s" repeatCount="indefinite"><mpath href="#ap-op" /></animateMotion>
+                </circle>
+                <circle r={5} fill="#06b6d4" opacity={0.70} style={{ filter: 'drop-shadow(0 0 4px #06b6d4)' }}>
+                  <animateMotion dur="9s" begin="-4.5s" repeatCount="indefinite"><mpath href="#ap-op" /></animateMotion>
+                </circle>
 
-              {/* profile rings */}
-              <circle cx={CX} cy={CY} r={PR + 24} fill="none" stroke="rgba(255,255,255,0.75)" strokeWidth={12} filter="url(#ap-ring-glow)" />
-              <circle cx={CX} cy={CY} r={PR + 16} fill="url(#ap-ring-grad)" />
-              <circle cx={CX} cy={CY} r={PR + 4} fill="white" />
+                {/* profile rings */}
+                <circle cx={CX} cy={CY} r={PR + 24} fill="none" stroke="rgba(255,255,255,0.75)" strokeWidth={12} filter="url(#ap-ring-glow)" />
+                <circle cx={CX} cy={CY} r={PR + 16} fill="url(#ap-ring-grad)" />
+                <circle cx={CX} cy={CY} r={PR + 4} fill="white" />
 
-              {/* photo */}
-              <image
-                href={avatarUrl}
-                x={CX - PR} y={CY - PR} width={PR * 2} height={PR * 2}
-                clipPath="url(#ap-photo-clip)"
-                preserveAspectRatio="xMidYMid slice"
-              />
-            </svg>
+                {/* photo */}
+                <image
+                  href={avatarUrl}
+                  x={CX - PR} y={CY - PR} width={PR * 2} height={PR * 2}
+                  clipPath="url(#ap-photo-clip)"
+                  preserveAspectRatio="xMidYMid slice"
+                />
+              </svg>
 
-            {/* orbit pill cards */}
-            {orbitCards.map((card, idx) => (
-              <OrbitCard key={card.id} card={card} idx={idx} />
-            ))}
+              {/* orbit pill cards */}
+              {orbitCards.map((card, idx) => (
+                <OrbitCard key={card.id} card={card} idx={idx} />
+              ))}
             </div>
           </div>
         </div>
