@@ -5,7 +5,7 @@ import {
   ExternalLink, Eye, Smartphone, Globe, Cloud, GripHorizontal, 
   BarChart, Rocket, Code2, Layers, Briefcase
 } from 'lucide-react';
-import { allProjectsData, allProjectsSidebar } from '../data';
+import { useAdmin } from '../context/AdminContext';
 import './AllProjects.css';
 
 const categoryIcons = {
@@ -23,6 +23,10 @@ const categoryColors = {
 };
 
 export default function AllProjects() {
+  const { data } = useAdmin();
+  const allProjectsData = data?.allProjectsData || [];
+  const allProjectsSidebar = data?.allProjectsSidebar || { overview: [], technologies: [], categories: [] };
+  
   const [activeTab, setActiveTab] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
   const ITEMS_PER_PAGE = 4;

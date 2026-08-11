@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Code2, ChevronRight, ChevronDown, Lightbulb, Wrench } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { skillsData } from '../data';
+import { useAdmin } from '../context/AdminContext';
 import { useFadeUp } from '../hooks/useFadeUp';
 
 // Simple donut chart using SVG
@@ -54,6 +54,7 @@ const skillIconColors = [
 export default function SkillsSection() {
   const ref = useFadeUp();
   const [showAll, setShowAll] = useState(false);
+  const { data: { skillsData } } = useAdmin();
   const { sectionTitle, sectionSubtitle, viewAllUrl, technicalSkills,
     skillsOverview, popularTools, learningNow, stats } = skillsData;
 

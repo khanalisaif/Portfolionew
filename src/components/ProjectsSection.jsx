@@ -1,6 +1,6 @@
 import { Briefcase, ChevronRight, Users, Download, Star, Calendar, ExternalLink, Eye, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { projectsData } from '../data';
+import { useAdmin } from '../context/AdminContext';
 import { useFadeUp } from '../hooks/useFadeUp';
 
 const statIconMap = {
@@ -17,6 +17,7 @@ const projectColors = [
 
 export default function ProjectsSection() {
   const ref = useFadeUp();
+  const { data: { projectsData } } = useAdmin();
   const { sectionTitle, sectionSubtitle, viewAllUrl, featured } = projectsData;
 
   return (

@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { GraduationCap, MapPin, ChevronRight, CheckCircle2, ChevronLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { educationData } from '../data';
+import { useAdmin } from '../context/AdminContext';
 import { useFadeUp } from '../hooks/useFadeUp';
 
 function CertCarousel({ certificates }) {
@@ -43,6 +43,7 @@ function CertCarousel({ certificates }) {
 }
 
 export default function EducationSection() {
+  const { data: { educationData } } = useAdmin();
   const ref = useFadeUp();
   const { sectionTitle, sectionSubtitle, viewAllUrl, entries } = educationData;
 

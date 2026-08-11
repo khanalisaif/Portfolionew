@@ -10,6 +10,21 @@ import AllSkills from './pages/AllSkills';
 import AllProjects from './pages/AllProjects';
 import ProjectDetails from './pages/ProjectDetails';
 import ScrollToTop from './components/ScrollToTop';
+import TopNav from './components/TopNav';
+import AboutPage from './pages/AboutPage';
+
+// Admin Pages
+import AdminLogin from './pages/admin/AdminLogin';
+import AdminOtp from './pages/admin/AdminOtp';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminHome from './pages/admin/AdminHome';
+import ProfileEdit from './pages/admin/ProfileEdit';
+import OrbitEdit from './pages/admin/OrbitEdit';
+import EducationEdit from './pages/admin/EducationEdit';
+import SkillsEdit from './pages/admin/SkillsEdit';
+import ProjectsEdit from './pages/admin/ProjectsEdit';
+import NetworkEdit from './pages/admin/NetworkEdit';
+import AllSkillsEdit from './pages/admin/AllSkillsEdit';
 
 function Home() {
   return (
@@ -27,12 +42,28 @@ export default function App() {
   return (
     <>
       <ScrollToTop />
+      <TopNav />
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<AboutPage />} />
+        <Route path="/home" element={<Home />} />
         <Route path="/all-education" element={<AllEducation />} />
         <Route path="/all-skills" element={<AllSkills />} />
         <Route path="/all-projects" element={<AllProjects />} />
         <Route path="/project/:id" element={<ProjectDetails />} />
+        
+        {/* Admin Routes */}
+        <Route path="/page/admin/login" element={<AdminLogin />} />
+        <Route path="/page/admin/otp" element={<AdminOtp />} />
+        <Route path="/page/admin" element={<AdminDashboard />}>
+          <Route index element={<AdminHome />} />
+          <Route path="profile" element={<ProfileEdit />} />
+          <Route path="orbit" element={<OrbitEdit />} />
+          <Route path="education" element={<EducationEdit />} />
+          <Route path="skills" element={<SkillsEdit />} />
+          <Route path="all-skills" element={<AllSkillsEdit />} />
+          <Route path="projects" element={<ProjectsEdit />} />
+          <Route path="network" element={<NetworkEdit />} />
+        </Route>
       </Routes>
     </>
   );

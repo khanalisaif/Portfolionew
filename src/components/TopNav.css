@@ -1,0 +1,77 @@
+/* ============================================
+   TOP NAV — Centered tabs
+   ============================================ */
+.tnav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  height: 72px;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid #eef0f8;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 48px;
+  font-family: 'Inter', sans-serif;
+  transition: transform 0.3s ease, opacity 0.3s ease, background 0.3s ease, backdrop-filter 0.3s ease, border-color 0.3s ease;
+}
+
+/* Hidden state when scrolled on home */
+.tnav.tnav-hidden {
+  transform: translateY(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .tnav { padding: 0 20px; }
+}
+
+/* Nav links in the center */
+.tnav-links {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.tnav-link {
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #64748b;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.18s ease;
+  white-space: nowrap;
+  position: relative;
+}
+
+.tnav-link:hover {
+  color: #1e293b;
+  background: #f1f5f9;
+}
+
+.tnav-link.active {
+  color: #6366f1;
+}
+
+.tnav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 16px;
+  right: 16px;
+  height: 2.5px;
+  background: #6366f1;
+  border-radius: 2px;
+}
+
+/* Transparent mode for /home */
+.tnav.tnav-transparent {
+  background: transparent;
+  backdrop-filter: none;
+  border-bottom-color: transparent;
+  box-shadow: none;
+}
+

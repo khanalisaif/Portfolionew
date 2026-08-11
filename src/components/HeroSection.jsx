@@ -4,7 +4,7 @@ import {
   Download, Send, ChevronDown, ChevronRight, ArrowRight,
   FileText, Users, Code2, Trophy, Briefcase, Dumbbell
 } from 'lucide-react';
-import { profileData, orbitCards } from '../data';
+import { useAdmin } from '../context/AdminContext';
 
 // ── Icon mapping ──────────────────────────────────
 const ICONS = {
@@ -92,7 +92,11 @@ function MobileOrbitCard({ card }) {
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           color: 'white', flexShrink: 0,
         }}>
-          <Icon size={22} />
+          {card.customIconUrl ? (
+            <img src={card.customIconUrl} alt="" style={{ width: 22, height: 22, objectFit: 'contain' }} />
+          ) : (
+            <Icon size={22} />
+          )}
         </div>
         <div style={{ flex: 1, minWidth: 0, textAlign: 'left' }}>
           <div style={{ fontSize: 14, fontWeight: 700, color: '#1e293b', lineHeight: 1.2 }}>{card.label}</div>
@@ -117,7 +121,7 @@ function MobileOrbitCard({ card }) {
         }}>
           <div style={{ height: 1, background: '#f1f5f9', marginBottom: 12 }} />
           <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 14px 0', display: 'flex', flexDirection: 'column', gap: 8 }}>
-            {card.items.map((item, i) => (
+            {card.items?.map((item, i) => (
               <li key={i} style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 13, color: '#334155', fontWeight: 500, textAlign: 'left' }}>
                 <span style={{
                   width: 7, height: 7, borderRadius: '50%',
@@ -191,7 +195,11 @@ function OrbitCard({ card, idx }) {
               animation: 'expandIcon 0.3s cubic-bezier(0.34,1.56,0.64,1)',
             }}
           >
-            <Icon size={20} />
+            {card.customIconUrl ? (
+              <img src={card.customIconUrl} alt="" style={{ width: 20, height: 20, objectFit: 'contain' }} />
+            ) : (
+              <Icon size={20} />
+            )}
           </div>
 
           {/* 2. The Speech Bubble Card */}
@@ -231,7 +239,7 @@ function OrbitCard({ card, idx }) {
               {card.label}
             </div>
             <ul style={{ listStyle: 'none', padding: 0, margin: '0 0 12px 0' }}>
-              {card.items.map((item, i) => (
+              {card.items?.map((item, i) => (
                 <li key={i} style={{ fontSize: 12, color: '#475569', padding: '2px 0', display: 'flex', alignItems: 'center', gap: 6 }}>
                   <span style={{ color: '#6366f1', fontSize: 16, lineHeight: 1 }}>•</span>{item}
                 </li>
@@ -274,7 +282,11 @@ function OrbitCard({ card, idx }) {
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             color: 'white', flexShrink: 0,
           }}>
-            <Icon size={22} />
+            {card.customIconUrl ? (
+              <img src={card.customIconUrl} alt="" style={{ width: 22, height: 22, objectFit: 'contain' }} />
+            ) : (
+              <Icon size={22} />
+            )}
           </div>
           <div style={{ flex: 1, minWidth: 0 }}>
             <div style={{ fontSize: 13, fontWeight: 700, color: '#1e293b', lineHeight: 1.2 }}>{card.label}</div>
@@ -289,6 +301,7 @@ function OrbitCard({ card, idx }) {
 
 // ── Main Hero Section ─────────────────────────────
 export default function HeroSection() {
+  const { data: { profileData, orbitCards } } = useAdmin();
   const { nameParts, titles, tagline, resumeUrl, hireEmail, avatarUrl } = profileData;
   const [scale, setScale] = useState(1);
 
@@ -498,12 +511,12 @@ export default function HeroSection() {
             <circle cx="100" cy="100" r="89" fill="url(#mob-ring-grad)" className="profile-ring-anim" />
             <circle cx="100" cy="100" r="81" fill="white" />
             <image href={avatarUrl} x="22" y="22" width="156" height="156" clipPath="url(#mob-photo-clip)" preserveAspectRatio="xMidYMid slice" />
-          <g style={{ transformOrigin: '100px 100px', animation: 'mobileOrbitSpin 10s linear infinite' }}>
-            <circle cx="100" cy="5" r="4.5" fill="#3b82f6" style={{ filter: 'drop-shadow(0 0 4px #3b82f6)' }} />
-            <circle cx="195" cy="100" r="4.5" fill="#06b6d4" style={{ filter: 'drop-shadow(0 0 4px #06b6d4)' }} />
-            <circle cx="100" cy="195" r="4" fill="#3b82f6" style={{ filter: 'drop-shadow(0 0 3px #3b82f6)' }} />
-            <circle cx="5" cy="100" r="4" fill="#06b6d4" style={{ filter: 'drop-shadow(0 0 3px #06b6d4)' }} />
-          </g>
+            <g style={{ transformOrigin: '100px 100px', animation: 'mobileOrbitSpin 10s linear infinite' }}>
+              <circle cx="100" cy="5" r="4.5" fill="#3b82f6" style={{ filter: 'drop-shadow(0 0 4px #3b82f6)' }} />
+              <circle cx="195" cy="100" r="4.5" fill="#06b6d4" style={{ filter: 'drop-shadow(0 0 4px #06b6d4)' }} />
+              <circle cx="100" cy="195" r="4" fill="#3b82f6" style={{ filter: 'drop-shadow(0 0 3px #3b82f6)' }} />
+              <circle cx="5" cy="100" r="4" fill="#06b6d4" style={{ filter: 'drop-shadow(0 0 3px #06b6d4)' }} />
+            </g>
           </svg>
         </div>
 

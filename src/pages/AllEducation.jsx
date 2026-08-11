@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import { ArrowLeft, Download, MapPin, CheckCircle2, ChevronLeft, ChevronRight, GraduationCap } from 'lucide-react';
 import './AllEducation.css';
 import { useRef, useState } from 'react';
-import { allEducationData } from '../data';
+import { useAdmin } from '../context/AdminContext';
 
 const ITEMS_PER_PAGE = 3;
 
@@ -36,8 +36,11 @@ function CertCarousel({ certificates }) {
 }
 
 export default function AllEducation() {
+  const { data } = useAdmin();
+  const allEducationData = data?.allEducationData || data?.educationData?.entries || [];
+
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(allEducationData.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(allEducationData.length / ITEMS_PER_PAGE) || 1;
   const paginated = allEducationData.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
   return (

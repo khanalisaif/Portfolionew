@@ -5,7 +5,7 @@ import {
   Layers, Database, Server, Settings, Wrench, CheckCircle,
   Phone, RefreshCw, Shield, Zap
 } from 'lucide-react';
-import { projectDetailsData } from '../data';
+import { useAdmin } from '../context/AdminContext';
 import './ProjectDetails.css';
 
 const iconMap = {
@@ -29,7 +29,8 @@ const iconMap = {
 
 export default function ProjectDetails() {
   const { id } = useParams();
-  const project = projectDetailsData[id] || projectDetailsData['digivahan'];
+  const { data } = useAdmin();
+  const project = data?.projectDetailsData?.[id] || data?.projectDetailsData?.['digivahan'];
 
   if (!project) return <div>Project not found</div>;
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Users, Globe, Server, Search, Cloud, Smartphone } from 'lucide-react';
-import { networkData, profileData } from '../data';
+import { useAdmin } from '../context/AdminContext';
 import { useFadeUp } from '../hooks/useFadeUp';
 
 // Map icon names to Lucide components
@@ -24,6 +24,7 @@ function polarToXY(angleDeg, radius, cx, cy) {
 }
 
 export default function NetworkSection() {
+  const { data: { networkData, profileData } } = useAdmin();
   const ref = useFadeUp();
   const { sectionTitle, sectionSubtitle, centerLabel, centerSubLabel, centerAvatar, connections } = networkData;
   const [scale, setScale] = useState(1);
@@ -132,7 +133,7 @@ export default function NetworkSection() {
               />
               <circle cx={cx} cy={cy} r={87} fill="white" />
               <image
-                href={centerAvatar}
+                href={profileData.avatarUrl || centerAvatar}
                 x={cx - 85} y={cy - 85}
                 width={170} height={170}
                 clipPath="url(#clip-center)"
@@ -236,13 +237,24 @@ export default function NetworkSection() {
                       stroke={node.ringColor}
                       strokeWidth={2.5}
                     />
-                    <image
-                      href={node.avatar}
-                      x={avatarX - avatarR} y={avatarY - avatarR}
-                      width={avatarR * 2} height={avatarR * 2}
-                      clipPath={`url(#${clipId})`}
-                      preserveAspectRatio="xMidYMid slice"
-                    />
+                    {node.avatar ? (
+                      <image
+                        href={node.avatar}
+                        x={avatarX - avatarR} y={avatarY - avatarR}
+                        width={avatarR * 2} height={avatarR * 2}
+                        clipPath={`url(#${clipId})`}
+                        preserveAspectRatio="xMidYMid slice"
+                      />
+                    ) : (
+                      <text
+                        x={avatarX} y={avatarY + 6}
+                        textAnchor="middle"
+                        fontSize="16" fontWeight="800" fill={node.ringColor}
+                        fontFamily="Inter, sans-serif"
+                      >
+                        {node.name?.[0] || '?'}
+                      </text>
+                    )}
                   </g>
                 );
               })}
@@ -274,7 +286,7 @@ export default function NetworkSection() {
                 <circle cx="90" cy="90" r="84" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="8" filter="url(#net-mob-glow)" />
                 <circle cx="90" cy="90" r="78" fill="url(#net-mob-grad)" className="profile-ring-anim" />
                 <circle cx="90" cy="90" r="71" fill="white" />
-                <image href={centerAvatar} x="22" y="22" width="136" height="136" clipPath="url(#net-mob-clip)" preserveAspectRatio="xMidYMid slice" />
+                <image href={profileData.avatarUrl || centerAvatar} x="22" y="22" width="136" height="136" clipPath="url(#net-mob-clip)" preserveAspectRatio="xMidYMid slice" />
                 {/* Accent dots */}
                 <g style={{ transformOrigin: '90px 90px', animation: 'mobileOrbitSpin 10s linear infinite' }}>
                   <circle cx="90" cy="6" r="4" fill="#a855f7" style={{ filter: 'drop-shadow(0 0 4px #a855f7)' }} />
@@ -318,16 +330,30 @@ export default function NetworkSection() {
                 >
                   {/* Avatar with colored ring */}
                   <div style={{ position: 'relative', flexShrink: 0 }}>
-                    <img
-                      src={node.avatar}
-                      alt={node.name}
-                      style={{
-                        width: 52, height: 52, borderRadius: '50%',
-                        border: `2.5px solid ${node.ringColor}`,
-                        objectFit: 'cover',
-                        display: 'block',
-                      }}
-                    />
+                    {node.avatar ? (
+                      <img
+                        src={node.avatar}
+                        alt={node.name}
+                        style={{
+                          width: 52, height: 52, borderRadius: '50%',
+                          border: `2.5px solid ${node.ringColor}`,
+                          objectFit: 'cover',
+                          display: 'block',
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: 52, height: 52, borderRadius: '50%',
+                          border: `2.5px solid ${node.ringColor}`,
+                          background: '#f1f5f9',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          fontSize: 18, fontWeight: 800, color: node.ringColor
+                        }}
+                      >
+                        {node.name?.[0] || '?'}
+                      </div>
+                    )}
                   </div>
                   {/* Info */}
                   <div style={{ flex: 1, minWidth: 0 }}>

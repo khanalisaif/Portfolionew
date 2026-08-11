@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Search, Rocket, ArrowRight, ChevronDown } from 'lucide-react';
-import { allSkillsCategories, allSkillsDetailed } from '../data';
+import { useAdmin } from '../context/AdminContext';
 import './AllSkills.css';
 
 export default function AllSkills() {
+  const { data: { allSkillsCategories, allSkillsDetailed } } = useAdmin();
   const [activeCategory, setActiveCategory] = useState(allSkillsCategories[0].id);
   const [searchQuery, setSearchQuery] = useState('');
   const [showAllMobileCategories, setShowAllMobileCategories] = useState(false);

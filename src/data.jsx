@@ -7,9 +7,15 @@ export const profileData = {
   nameParts: { first: "Mustafa", last: " Hasan" },
   titles: ["Android Developer", "UI/UX Designer", "Freelancer"],
   tagline: "I build beautiful Android applications with modern UI, scalable architecture and seamless user experiences.",
-  resumeUrl: "#",
+  resumeUrl: "/Saif-Ali-Khan-Resume.pdf",
   hireEmail: "mustafa@example.com",
-  avatarUrl: "https://i.pravatar.cc/300?img=11",
+  avatarUrl: "/Nikhil.webp.png",
+  socialLinks: {
+    linkedin: "#",
+    github: "#",
+    email: "mailto:dummy@example.com",
+    whatsapp: "#"
+  }
 };
 
 // Orbit Cards - shown in circle around profile photo
@@ -303,7 +309,7 @@ export const networkData = {
   sectionSubtitle: "A strong network to learn, collaborate and solve problems together",
   centerLabel: "Me",
   centerSubLabel: "Android Developer",
-  centerAvatar: "https://i.pravatar.cc/300?img=11",
+  centerAvatar: "/Nikhil.webp.png",
   connections: [
     {
       id: "aman",
@@ -1634,4 +1640,68 @@ export const allEducationData = [
   }
 ];
 
-
+// About Page specific data
+export const aboutPageData = {
+  stats: [
+    { value: "3+", label: "Years Experience", icon: "briefcase" },
+    { value: "40+", label: "Applications Completed", icon: "code" },
+    { value: "20+", label: "Technologies Worked With", icon: "layers" },
+    { value: "3+", label: "Companies Worked With", icon: "building" },
+    { value: "40+", label: "Android Apps", icon: "android" },
+    { value: "1+", label: "iOS Projects", icon: "apple" }
+  ],
+  coreValues: [
+    {
+      title: "Clean Architecture",
+      description: "Building scalable and maintainable applications following modern architecture principles.",
+      icon: "code",
+      color: "text-purple-600 bg-purple-50"
+    },
+    {
+      title: "Problem Solving",
+      description: "Transforming complex business requirements into reliable mobile solutions.",
+      icon: "lightbulb",
+      color: "text-green-600 bg-green-50"
+    },
+    {
+      title: "Performance",
+      description: "Optimizing applications for speed, stability, and exceptional user experience.",
+      icon: "zap",
+      color: "text-blue-600 bg-blue-50"
+    },
+    {
+      title: "Continuous Learning",
+      description: "Always exploring modern technologies and improving development practices.",
+      icon: "book",
+      color: "text-indigo-600 bg-indigo-50"
+    },
+    {
+      title: "Team Collaboration",
+      description: "Working closely with designers, QA engineers, and backend developers to deliver quality products.",
+      icon: "users",
+      color: "text-pink-600 bg-pink-50"
+    },
+    {
+      title: "User First",
+      description: "Designing applications that are simple, intuitive, and enjoyable to use.",
+      icon: "user",
+      color: "text-orange-600 bg-orange-50"
+    }
+  ],
+  whatIWorkOn: [
+    { title: "Android Development", icon: "android", color: "text-green-500 bg-green-50" },
+    { title: "iOS Development", icon: "apple", color: "text-gray-800 bg-gray-50" },
+    { title: "REST API Integration", icon: "cloud", color: "text-blue-500 bg-blue-50" },
+    { title: "Google Maps & Location", icon: "map-pin", color: "text-red-500 bg-red-50" },
+    { title: "Authentication & Security", icon: "shield", color: "text-emerald-500 bg-emerald-50" },
+    { title: "Payment Gateway", icon: "credit-card", color: "text-purple-500 bg-purple-50" },
+    { title: "Push Notifications", icon: "bell", color: "text-orange-500 bg-orange-50" },
+    { title: "QR Scanner Development", icon: "qr-code", color: "text-indigo-500 bg-indigo-50" },
+    { title: "Firebase Services", icon: "flame", color: "text-amber-500 bg-amber-50" },
+    { title: "Cloud Integration", icon: "cloud-upload", color: "text-cyan-500 bg-cyan-50" },
+    { title: "Performance Optimization", icon: "trending-up", color: "text-blue-600 bg-blue-50" },
+    { title: "UI/UX Implementation", icon: "pen-tool", color: "text-pink-500 bg-pink-50" }
+  ],
+  careerObjective: "My goal is to build reliable, scalable, and user-friendly mobile applications while continuously improving my technical expertise and contributing to products that create real value for users and businesses.",
+  quote: "Great mobile applications are built by combining clean code, thoughtful design, and a deep understanding of user needs."
+};
