@@ -13,7 +13,8 @@ import ScrollToTop from './components/ScrollToTop';
 import TopNav from './components/TopNav';
 import AboutPage from './pages/AboutPage';
 
-// Admin Pages
+// Admin Pages (Commented out for Netlify build since admin is in .gitignore)
+/*
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminOtp from './pages/admin/AdminOtp';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -25,6 +26,7 @@ import SkillsEdit from './pages/admin/SkillsEdit';
 import ProjectsEdit from './pages/admin/ProjectsEdit';
 import NetworkEdit from './pages/admin/NetworkEdit';
 import AllSkillsEdit from './pages/admin/AllSkillsEdit';
+*/
 
 function Home() {
   return (
@@ -51,7 +53,8 @@ export default function App() {
         <Route path="/all-projects" element={<AllProjects />} />
         <Route path="/project/:id" element={<ProjectDetails />} />
         
-        {/* Admin Routes */}
+        {/* Admin Routes (Commented out for Netlify build) */}
+        {/*
         <Route path="/page/admin/login" element={<AdminLogin />} />
         <Route path="/page/admin/otp" element={<AdminOtp />} />
         <Route path="/page/admin" element={<AdminDashboard />}>
@@ -64,6 +67,7 @@ export default function App() {
           <Route path="projects" element={<ProjectsEdit />} />
           <Route path="network" element={<NetworkEdit />} />
         </Route>
+        */}
       </Routes>
     </>
   );
