@@ -363,12 +363,6 @@ export default function AboutPage() {
               </a>
             </div>
 
-            {/* Mobile orbit cards */}
-            {isMobile && (
-              <div className="ap-mob-orbit">
-                {orbitCards.map(card => <MobOrbitCard key={card.id} card={card} />)}
-              </div>
-            )}
           </div>
 
           {/* RIGHT — orbit */}
