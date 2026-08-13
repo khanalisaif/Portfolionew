@@ -73,7 +73,11 @@ export default function ProjectsSection() {
                     const Icon = statIconMap[stat.icon] || Users;
                     return (
                       <div className="project-stat" key={i}>
-                        <Icon size={16} className="project-stat-icon" />
+                        {stat.customIconUrl ? (
+                          <img src={stat.customIconUrl} alt="" className="project-stat-icon" style={{ width: 16, height: 16, objectFit: 'contain' }} />
+                        ) : (
+                          <Icon size={16} className="project-stat-icon" />
+                        )}
                         <div>
                           <div className="project-stat-info-label">{stat.label}</div>
                           <div className="project-stat-info-value">{stat.value}</div>

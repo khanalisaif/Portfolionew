@@ -56,7 +56,7 @@ export default function SkillsSection() {
   const [showAll, setShowAll] = useState(false);
   const { data: { skillsData } } = useAdmin();
   const { sectionTitle, sectionSubtitle, viewAllUrl, technicalSkills,
-    skillsOverview, popularTools, learningNow, stats } = skillsData;
+    skillsOverview, popularTools, learningNow, stats, cta } = skillsData;
 
   const displayedSkills = showAll ? technicalSkills : technicalSkills.slice(0, 6);
 
@@ -227,8 +227,8 @@ export default function SkillsSection() {
               <Lightbulb size={22} />
             </div>
             <div className="skills-cta-text">
-              <h4 style={{ fontSize: 16, fontWeight: 700, color: '#1e293b', marginBottom: 4 }}>Continuous Learner</h4>
-              <p style={{ fontSize: 12, color: '#64748b', lineHeight: 1.5 }}>I love exploring new technologies and improving my skills. I believe in continuous learning to stay up-to-date and build better solutions.</p>
+              <h4 style={{ fontSize: 16, fontWeight: 700, color: '#1e293b', marginBottom: 4 }}>{cta?.title || 'Continuous Learner'}</h4>
+              <p style={{ fontSize: 12, color: '#64748b', lineHeight: 1.5 }}>{cta?.description || 'I love exploring new technologies and improving my skills. I believe in continuous learning to stay up-to-date and build better solutions.'}</p>
             </div>
           </div>
 

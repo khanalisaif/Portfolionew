@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import './index.css';
 import HeroSection from './components/HeroSection';
 import EducationSection from './components/EducationSection';
@@ -13,8 +13,7 @@ import ScrollToTop from './components/ScrollToTop';
 import TopNav from './components/TopNav';
 import AboutPage from './pages/AboutPage';
 
-// Admin Pages (Commented out for Netlify build since admin is in .gitignore)
-/*
+// Admin Pages
 import AdminLogin from './pages/admin/AdminLogin';
 import AdminOtp from './pages/admin/AdminOtp';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -26,7 +25,7 @@ import SkillsEdit from './pages/admin/SkillsEdit';
 import ProjectsEdit from './pages/admin/ProjectsEdit';
 import NetworkEdit from './pages/admin/NetworkEdit';
 import AllSkillsEdit from './pages/admin/AllSkillsEdit';
-*/
+import AboutEdit from './pages/admin/AboutEdit';
 
 function Home() {
   return (
@@ -41,10 +40,13 @@ function Home() {
 }
 
 export default function App() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/page/admin');
+
   return (
     <>
       <ScrollToTop />
-      <TopNav />
+      {!isAdminRoute && <TopNav />}
       <Routes>
         <Route path="/" element={<AboutPage />} />
         <Route path="/home" element={<Home />} />
@@ -53,13 +55,13 @@ export default function App() {
         <Route path="/all-projects" element={<AllProjects />} />
         <Route path="/project/:id" element={<ProjectDetails />} />
         
-        {/* Admin Routes (Commented out for Netlify build) */}
-        {/*
+        {/* Admin Routes */}
         <Route path="/page/admin/login" element={<AdminLogin />} />
         <Route path="/page/admin/otp" element={<AdminOtp />} />
         <Route path="/page/admin" element={<AdminDashboard />}>
           <Route index element={<AdminHome />} />
           <Route path="profile" element={<ProfileEdit />} />
+          <Route path="about" element={<AboutEdit />} />
           <Route path="orbit" element={<OrbitEdit />} />
           <Route path="education" element={<EducationEdit />} />
           <Route path="skills" element={<SkillsEdit />} />
@@ -67,7 +69,6 @@ export default function App() {
           <Route path="projects" element={<ProjectsEdit />} />
           <Route path="network" element={<NetworkEdit />} />
         </Route>
-        */}
       </Routes>
     </>
   );

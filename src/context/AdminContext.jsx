@@ -4,7 +4,17 @@ import * as initialData from '../data';
 const AdminContext = createContext();
 
 export const AdminProvider = ({ children }) => {
-  const [data, setData] = useState({ ...initialData });
+  const [data, setData] = useState(() => {
+    const saved = localStorage.getItem('portfolioData');
+    if (saved) {
+      try {
+        return { ...initialData, ...JSON.parse(saved) };
+      } catch (e) {
+        console.error('Error parsing portfolio data:', e);
+      }
+    }
+    return { ...initialData };
+  });
 
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     return localStorage.getItem('adminAuth') === 'true';
@@ -19,10 +29,14 @@ export const AdminProvider = ({ children }) => {
   }, [isAuthenticated]);
 
   const updateData = (section, newData) => {
-    setData((prev) => ({
-      ...prev,
-      [section]: newData
-    }));
+    setData((prev) => {
+      const nextData = {
+        ...prev,
+        [section]: newData
+      };
+      localStorage.setItem('portfolioData', JSON.stringify(nextData));
+      return nextData;
+    });
   };
 
   const login = (email) => {

@@ -27,5 +27,3 @@ dist-ssr
 README.md
 *.md
 
-# Admin
-src/pages/admin/

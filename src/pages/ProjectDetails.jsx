@@ -75,7 +75,12 @@ export default function ProjectDetails() {
               return (
                 <div className="pd-stat-item" key={stat.label}>
                   <div className="pd-stat-label">
-                    <StatIcon size={12} /> {stat.label}
+                    {stat.customIconUrl ? (
+                      <img src={stat.customIconUrl} alt="" style={{ width: 12, height: 12, objectFit: 'contain' }} />
+                    ) : (
+                      <StatIcon size={12} />
+                    )} 
+                    {stat.label}
                   </div>
                   <div className="pd-stat-value">
                     {stat.isStar && <Star size={14} fill="#f59e0b" color="#f59e0b" style={{ marginRight: 4 }} />}

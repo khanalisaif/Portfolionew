@@ -35,7 +35,10 @@ const ALL_ICONS = {
   'pen-tool': Feather, target: Target
 };
 
-function Ico({ name, size = 20, style }) {
+function Ico({ name, customIconUrl, size = 20, style }) {
+  if (customIconUrl) {
+    return <img src={customIconUrl} alt="" style={{ width: size, height: size, objectFit: 'contain', ...style }} />;
+  }
   const C = ALL_ICONS[name] || Code2;
   return <C size={size} style={style} />;
 }
@@ -444,7 +447,7 @@ export default function AboutPage() {
             return (
               <div key={i} className="ap-stat">
                 <div className="ap-stat-icon" style={{ background: cfg.bg, color: cfg.color }}>
-                  <Ico name={stat.icon} size={22} />
+                  <Ico name={stat.icon} customIconUrl={stat.customIconUrl} size={22} />
                 </div>
                 <div className="ap-stat-val">{stat.value}</div>
                 <div className="ap-stat-label">{stat.label}</div>
@@ -462,7 +465,7 @@ export default function AboutPage() {
             return (
               <div key={i} className="ap-cv-card">
                 <div className="ap-cv-icon" style={{ background: pal.bg, color: pal.text }}>
-                  <Ico name={cv.icon} size={22} />
+                  <Ico name={cv.icon} customIconUrl={cv.customIconUrl} size={22} />
                 </div>
                 <div className="ap-cv-name">{cv.title}</div>
                 <div className="ap-cv-desc">{cv.description}</div>
@@ -480,7 +483,7 @@ export default function AboutPage() {
             return (
               <div key={i} className="ap-wiwo-card">
                 <div className="ap-wiwo-icon" style={{ background: pal.bg, color: pal.text }}>
-                  <Ico name={item.icon} size={18} />
+                  <Ico name={item.icon} customIconUrl={item.customIconUrl} size={18} />
                 </div>
                 <span className="ap-wiwo-name">{item.title}</span>
               </div>

@@ -208,9 +208,13 @@ export default function NetworkSection() {
 
                     {/* Skill chip text & icon */}
                     <g transform={`translate(${isLeft ? cardX + cardW - avatarR * 2 - 16 - (node.skill.length * 6 + 18) : cardX + avatarR * 2 + 16}, ${cardY + 48})`}>
-                      <svg width="14" height="14" fill="none" stroke={node.skillColor} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ overflow: 'visible' }}>
-                        <SkillIcon size={12} />
-                      </svg>
+                      {node.customSkillIconUrl ? (
+                        <image href={node.customSkillIconUrl} width="12" height="12" y="-1" preserveAspectRatio="xMidYMid meet" />
+                      ) : (
+                        <svg width="14" height="14" fill="none" stroke={node.skillColor} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ overflow: 'visible' }}>
+                          <SkillIcon size={12} />
+                        </svg>
+                      )}
                       <text
                         x="18"
                         y="10"

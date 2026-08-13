@@ -102,8 +102,10 @@ export default function AllSkills() {
               {activeData.meta.map((m, i) => (
                 <div className="meta-item" key={i}>
                   <div className="meta-icon-wrapper">
-                    {m.icon && m.icon.startsWith('http') ? (
-                      <img src={m.icon} alt="" width={16} height={16} />
+                    {m.customIconUrl ? (
+                      <img src={m.customIconUrl} alt="" width={16} height={16} style={{ objectFit: 'contain' }} />
+                    ) : m.icon && m.icon.startsWith('http') ? (
+                      <img src={m.icon} alt="" width={16} height={16} style={{ objectFit: 'contain' }} />
                     ) : (
                       <div style={{ width: 16, height: 16, background: '#e0e7ff', borderRadius: 4 }}></div>
                     )}
