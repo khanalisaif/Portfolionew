@@ -25,7 +25,7 @@ export default function AllSkills() {
     <div className="all-skills-page">
       {/* Top Navigation & Header */}
       <div className="all-skills-top">
-        <Link to="/" className="back-link">
+        <Link to="/home" className="back-link">
           <ArrowLeft size={16} /> Back to Home
         </Link>
         <div className="all-skills-header">

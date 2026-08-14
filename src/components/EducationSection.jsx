@@ -1,46 +1,8 @@
-import { useRef, useState } from 'react';
-import { GraduationCap, MapPin, ChevronRight, CheckCircle2, ChevronLeft } from 'lucide-react';
+import { GraduationCap, MapPin, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useAdmin } from '../context/AdminContext';
 import { useFadeUp } from '../hooks/useFadeUp';
 
-function CertCarousel({ certificates }) {
-  const scrollRef = useRef(null);
-
-  const scroll = (dir) => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollBy({ left: dir * 180, behavior: 'smooth' });
-    }
-  };
-
-  return (
-    <div className="cert-carousel-wrapper">
-      <div className="cert-carousel-header">
-        <span className="cert-carousel-title">Certificates from University</span>
-      </div>
-      <div className="cert-carousel-scroll" ref={scrollRef}>
-        {certificates.map((cert, i) => (
-          <div className="cert-item" key={i} id={`cert-${i}`}>
-            <img src={cert.image} alt={cert.title} />
-            <div className="cert-item-title">{cert.title}</div>
-            <div className="cert-item-year">{cert.year}</div>
-          </div>
-        ))}
-      </div>
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: 16, marginTop: 24 }}>
-        <button className="cert-nav-btn" onClick={() => scroll(-1)} id="cert-scroll-left">
-          <ChevronLeft size={14} />
-        </button>
-        <Link to="/all-education" className="section-view-all" style={{ fontSize: 12 }}>
-          View All <ChevronRight size={12} />
-        </Link>
-        <button className="cert-nav-btn" onClick={() => scroll(1)} id="cert-scroll-right">
-          <ChevronRight size={14} />
-        </button>
-      </div>
-    </div>
-  );
-}
 
 export default function EducationSection() {
   const { data: { educationData } } = useAdmin();
@@ -118,8 +80,6 @@ export default function EducationSection() {
               </div>
             </div>
 
-            {/* Certificate Carousel */}
-            <CertCarousel certificates={entry.certificates} />
           </div>
         ))}
 

@@ -1,7 +1,7 @@
 .all-projects-page {
   max-width: 1420px;
   margin: 0 auto;
-  padding: 40px 40px;
+  padding: 40px 40px 40px 40px;
   min-height: 100vh;
   background: #f9fafb;
   overflow-x: hidden;

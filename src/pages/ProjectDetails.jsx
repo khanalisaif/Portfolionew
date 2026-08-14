@@ -3,7 +3,7 @@ import {
   Folder, ArrowRight, CheckCircle2, ExternalLink, Eye, Star,
   BarChart, Smartphone, Code2, Users, Download, Calendar,
   Layers, Database, Server, Settings, Wrench, CheckCircle,
-  Phone, RefreshCw, Shield, Zap
+  Phone, RefreshCw, Shield, Zap, ArrowLeft
 } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
 import './ProjectDetails.css';
@@ -36,6 +36,9 @@ export default function ProjectDetails() {
 
   return (
     <div className="project-details-page">
+      <Link to="/home" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: '#6366f1', textDecoration: 'none', fontWeight: 600, fontSize: 15, marginBottom: 24 }}>
+        <ArrowLeft size={16} /> Back to Home
+      </Link>
       {/* Header */}
       <div className="pd-header">
         <div className="pd-header-left">

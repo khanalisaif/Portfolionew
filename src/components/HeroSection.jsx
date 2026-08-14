@@ -21,9 +21,9 @@ const GRADIENTS = {
   certificates: { c1: '#60a5fa', c2: '#1d4ed8' },   // blue
   networks: { c1: '#22d3ee', c2: '#0284c7' },   // cyan
   skills: { c1: '#6366f1', c2: '#7c3aed' },   // indigo-purple (</>)
-  achievements: { c1: '#a855f7', c2: '#db2777' },   // purple-pink (trophy)
+  experience: { c1: '#a855f7', c2: '#db2777' },   // purple-pink (trophy)
   projects: { c1: '#8b5cf6', c2: '#6d28d9' },   // violet (briefcase)
-  strength: { c1: '#3b82f6', c2: '#4338ca' },   // blue-indigo (dumbbell)
+  achievements: { c1: '#3b82f6', c2: '#4338ca' },   // blue-indigo (dumbbell)
 };
 
 // ── SVG canvas dimensions ─────────────────────────
@@ -38,9 +38,9 @@ const LAYOUT = [
   { id: 'certificates', angle: 330, side: 'left' },
   { id: 'networks', angle: 30, side: 'right' },
   { id: 'skills', angle: 270, side: 'left' },
-  { id: 'achievements', angle: 90, side: 'right' },
+  { id: 'experience', angle: 90, side: 'right' },
   { id: 'projects', angle: 210, side: 'left' },
-  { id: 'strength', angle: 150, side: 'right' },
+  { id: 'achievements', angle: 150, side: 'right' },
 ];
 
 // ── Helpers ───────────────────────────────────────
@@ -156,6 +156,7 @@ function MobileOrbitCard({ card }) {
 function OrbitCard({ card, idx }) {
   const [open, setOpen] = useState(false);
   const layout = LAYOUT.find(l => l.id === card.id);
+  if (!layout) return null;
   const Icon = ICONS[card.icon] || FileText;
   const g = GRADIENTS[card.id] || GRADIENTS.skills;
   const [ox, oy] = xy(layout.angle);
@@ -247,7 +248,7 @@ function OrbitCard({ card, idx }) {
             </ul>
             <Link
               to={card.viewAllUrl}
-              onClick={e => e.stopPropagation()}
+              onClick={e => { e.stopPropagation(); setOpen(false); }}
               style={{ fontSize: 12, fontWeight: 600, color: '#6366f1', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}
             >
               {card.viewAllLabel}&nbsp;<ArrowRight size={11} />

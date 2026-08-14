@@ -29,7 +29,7 @@ export const orbitCards = [
     position: "top-left",
     items: ["Google Certified", "Meta Certified", "Udemy Certificates"],
     viewAllLabel: "View all certificates",
-    viewAllUrl: "/all-education",
+    viewAllUrl: "/certificates",
   },
   {
     id: "networks",
@@ -40,7 +40,7 @@ export const orbitCards = [
     position: "top-right",
     items: ["LinkedIn", "GitHub", "Twitter"],
     viewAllLabel: "View all networks",
-    viewAllUrl: "/#network",
+    viewAllUrl: "/home#network",
   },
   {
     id: "skills",
@@ -54,15 +54,15 @@ export const orbitCards = [
     viewAllUrl: "/all-skills",
   },
   {
-    id: "achievements",
-    label: "Achievements",
-    sublabel: "My wins and recognitions",
+    id: "experience",
+    label: "Experience",
+    sublabel: "My professional journey",
     iconBg: "from-purple-500 to-pink-500",
-    icon: "trophy",
+    icon: "briefcase",
     position: "mid-right",
-    items: ["Top Performer 2023", "Hackathon Winner", "100+ Projects"],
-    viewAllLabel: "View all achievements",
-    viewAllUrl: "/all-education",
+    items: ["Senior Developer", "Tech Solutions Inc.", "AppMasters"],
+    viewAllLabel: "View all experience",
+    viewAllUrl: "/experience",
   },
   {
     id: "projects",
@@ -76,15 +76,15 @@ export const orbitCards = [
     viewAllUrl: "/all-projects",
   },
   {
-    id: "strength",
-    label: "Strength",
-    sublabel: "My core strengths",
+    id: "achievements",
+    label: "Achievements",
+    sublabel: "My core strengths and recognitions",
     iconBg: "from-blue-500 to-indigo-600",
     icon: "dumbbell",
     position: "bot-right",
     items: ["Problem Solving", "Team Player", "Fast Learner"],
-    viewAllLabel: "View all strengths",
-    viewAllUrl: "/all-skills",
+    viewAllLabel: "View all achievements",
+    viewAllUrl: "/achievements",
   },
 ];
 
@@ -142,6 +142,17 @@ export const skillsData = {
       platform: "Android",
       usedFor: "Android Apps",
       projects: "12+",
+    },
+    {
+      id: "ios",
+      name: "iOS Development",
+      iconUrl: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg",
+      description: "Developing robust iOS applications using Swift and SwiftUI.",
+      level: "Secondary",
+      levelColor: "text-blue-600 bg-blue-50",
+      platform: "iOS",
+      usedFor: "iOS Apps",
+      projects: "3+",
     },
     {
       id: "java",
@@ -395,6 +406,7 @@ export const networkData = {
 export const allSkillsCategories = [
   { id: "kotlin", name: "Kotlin", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kotlin/kotlin-original.svg", count: 24 },
   { id: "java", name: "Java", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/java/java-original.svg", count: 18 },
+  { id: "ios", name: "iOS Development", icon: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg", count: 12 },
   { id: "compose", name: "Jetpack Compose", icon: "https://upload.wikimedia.org/wikipedia/commons/d/d7/Android_robot.svg", count: 15 },
   { id: "android", name: "Android Development", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/android/android-original.svg", count: 20 },
   { id: "firebase", name: "Firebase", icon: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain.svg", count: 12 },
@@ -553,6 +565,36 @@ export const allSkillsDetailed = {
           "Used for user settings and app preferences"
         ],
         experience: "1+ Year"
+      }
+    ]
+  },
+  ios: {
+    title: "iOS Development",
+    badge: "Secondary Skill",
+    description: "Developing robust iOS applications using Swift and SwiftUI.",
+    meta: [
+      { label: "Platform", value: "iOS", icon: "https://upload.wikimedia.org/wikipedia/commons/f/fa/Apple_logo_black.svg" },
+      { label: "Used For", value: "iOS Apps", icon: "apps" },
+      { label: "Experience", value: "1+ Years", icon: "calendar" },
+      { label: "Projects", value: "3+ Projects", icon: "code" },
+    ],
+    breakdownCount: 5,
+    breakdownItems: [
+      {
+        id: "swift",
+        title: "Swift",
+        level: "Proficient",
+        description: "Writing clean and safe Swift code.",
+        points: ["Optionals and Generics", "Closures", "Protocol-Oriented Programming"],
+        experience: "1+ Years"
+      },
+      {
+        id: "swiftui",
+        title: "SwiftUI",
+        level: "Intermediate",
+        description: "Building modern user interfaces with SwiftUI.",
+        points: ["Declarative UI", "State and Binding", "Animations"],
+        experience: "1+ Years"
       }
     ]
   },
@@ -1079,7 +1121,7 @@ export const allProjectsData = [
     name: "TaskFlow - Project Management SaaS",
     verified: true,
     liveBadge: "Live",
-    category: "saas",
+    category: "ios",
     description: "A modern SaaS project management tool for teams to collaborate, track tasks, and manage sprints in real-time.",
     tags: ["React", "Node.js", "MongoDB", "Socket.io", "AWS"],
     stats: [
@@ -1154,7 +1196,7 @@ export const allProjectsSidebar = {
   categories: [
     { id: "android", label: "Android Apps", count: 8, color: "#22c55e" },
     { id: "web", label: "Web Applications", count: 5, color: "#3b82f6" },
-    { id: "saas", label: "SaaS Products", count: 3, color: "#a855f7" },
+    { id: "ios", label: "iOS Apps", count: 3, color: "#a855f7" },
     { id: "other", label: "Other Projects", count: 2, color: "#64748b" },
   ],
 };
@@ -1704,4 +1746,62 @@ export const aboutPageData = {
   ],
   careerObjective: "My goal is to build reliable, scalable, and user-friendly mobile applications while continuously improving my technical expertise and contributing to products that create real value for users and businesses.",
   quote: "Great mobile applications are built by combining clean code, thoughtful design, and a deep understanding of user needs."
+};
+
+// Certificates Data
+export const certificatesData = {
+  sectionTitle: "Certificates",
+  sectionSubtitle: "My professional certifications and licenses",
+  stats: [
+    { value: "10+", label: "Total Certificates" },
+    { value: "3", label: "Global Certifications" },
+    { value: "5", label: "Specializations" }
+  ],
+  entries: [
+    {
+      id: "cert1",
+      title: "Google Associate Android Developer",
+      issuer: "Google",
+      date: "Aug 2023",
+      description: "Demonstrated skills in building Android apps, including UI, data management, debugging, and testing.",
+    },
+    {
+      id: "cert2",
+      title: "Meta Front-End Developer",
+      issuer: "Meta",
+      date: "Jan 2024",
+      description: "Professional certification covering React, JavaScript, UI/UX principles, and responsive web design.",
+    },
+    {
+      id: "cert3",
+      title: "Complete Kotlin Coroutines Development",
+      issuer: "Udemy",
+      date: "Mar 2022",
+      description: "Advanced concepts in Kotlin coroutines, flows, channels, and structured concurrency for Android.",
+    }
+  ]
+};
+
+// Experience Data
+export const experienceData = {
+  sectionTitle: "Experience",
+  sectionSubtitle: "My professional journey",
+  entries: [
+    {
+      id: "exp1",
+      role: "Senior Android Developer",
+      company: "Tech Solutions Inc.",
+      location: "Bangalore, India",
+      period: "2023 - Present",
+      description: "Leading the mobile development team to build scalable Android applications."
+    },
+    {
+      id: "exp2",
+      role: "Software Engineer",
+      company: "AppMasters",
+      location: "Remote",
+      period: "2021 - 2023",
+      description: "Developed and maintained several high-traffic e-commerce applications."
+    }
+  ]
 };

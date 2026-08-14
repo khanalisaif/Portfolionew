@@ -3,22 +3,22 @@ import { Link } from 'react-router-dom';
 import { 
   Folder, ArrowRight, CheckCircle2, Users, Download, Star, Calendar, 
   ExternalLink, Eye, Smartphone, Globe, Cloud, GripHorizontal, 
-  BarChart, Rocket, Code2, Layers, Briefcase
+  BarChart, Rocket, Code2, Layers, Briefcase, ArrowLeft
 } from 'lucide-react';
 import { useAdmin } from '../context/AdminContext';
 import './AllProjects.css';
 
 const categoryIcons = {
   android: Smartphone,
+  ios: Smartphone,
   web: Globe,
-  saas: Cloud,
   other: Briefcase,
 };
 
 const categoryColors = {
   android: '#22c55e',
+  ios: '#3b82f6',
   web: '#3b82f6',
-  saas: '#a855f7',
   other: '#64748b',
 };
 
@@ -34,8 +34,7 @@ export default function AllProjects() {
   const tabs = [
     { id: 'all', label: 'All Projects', icon: GripHorizontal },
     { id: 'android', label: 'Android Apps', icon: Smartphone },
-    { id: 'web', label: 'Web Apps', icon: Globe },
-    { id: 'saas', label: 'SaaS Products', icon: Cloud },
+    { id: 'ios', label: 'iOS Apps', icon: Smartphone },
     { id: 'other', label: 'Other', icon: Briefcase },
   ];
 
@@ -53,6 +52,9 @@ export default function AllProjects() {
 
   return (
     <div className="all-projects-page">
+      <Link to="/home" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, color: '#6366f1', textDecoration: 'none', fontWeight: 600, fontSize: 15, marginBottom: 24 }}>
+        <ArrowLeft size={16} /> Back to Home
+      </Link>
       {/* Header */}
       <div className="ap-header">
         <div className="ap-header-left">

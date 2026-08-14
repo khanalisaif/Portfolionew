@@ -4,7 +4,7 @@ import { useAdmin } from '../../context/AdminContext';
 import '../../admin.css';
 import {
   LayoutDashboard, LogOut, User, Navigation, BookOpen, Wrench, Briefcase, Network, Database,
-  ChevronRight, RefreshCw, Menu, X, Info
+  ChevronRight, RefreshCw, Menu, X, Info, Award, GraduationCap
 } from 'lucide-react';
 
 const navItems = [
@@ -12,11 +12,13 @@ const navItems = [
   { name: 'Profile', path: '/page/admin/profile', icon: User, colorClass: 'blue' },
   { name: 'About Page', path: '/page/admin/about', icon: Info, colorClass: 'indigo' },
   { name: 'Orbit Cards', path: '/page/admin/orbit', icon: Navigation, colorClass: 'violet' },
-  { name: 'Education', path: '/page/admin/education', icon: BookOpen, colorClass: 'purple' },
   { name: 'Skills', path: '/page/admin/skills', icon: Wrench, colorClass: 'cyan' },
   { name: 'All Skills', path: '/page/admin/all-skills', icon: Database, colorClass: 'slate' },
   { name: 'Projects', path: '/page/admin/projects', icon: Briefcase, colorClass: 'green' },
   { name: 'Network', path: '/page/admin/network', icon: Network, colorClass: 'pink' },
+  { name: 'Experience', path: '/page/admin/experience', icon: Briefcase, colorClass: 'purple' },
+  { name: 'Certificates', path: '/page/admin/certificates', icon: Award, colorClass: 'yellow' },
+  { name: 'All Education', path: '/page/admin/all-education', icon: GraduationCap, colorClass: 'blue' },
 ];
 
 const AdminDashboard = () => {

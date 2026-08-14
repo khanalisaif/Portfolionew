@@ -2,7 +2,7 @@
 .all-education-page {
   max-width: 1420px;
   margin: 0 auto;
-  padding: 40px 40px;
+  padding: 40px 40px 40px 40px;
   min-height: 100vh;
   background: #f9fafb;
 }
@@ -178,6 +178,19 @@
   font-size: 16px;
   font-weight: 700;
   color: white;
+}
+
+/* Certificates Grid */
+.cert-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 24px;
+}
+
+@media (min-width: 1024px) {
+  .cert-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 .ae-edu-univ-loc {

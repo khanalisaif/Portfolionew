@@ -48,9 +48,9 @@ const GRADIENTS = {
   certificates: { c1: '#60a5fa', c2: '#1d4ed8' },
   networks: { c1: '#22d3ee', c2: '#0284c7' },
   skills: { c1: '#6366f1', c2: '#7c3aed' },
-  achievements: { c1: '#a855f7', c2: '#db2777' },
+  experience: { c1: '#a855f7', c2: '#db2777' },
   projects: { c1: '#8b5cf6', c2: '#6d28d9' },
-  strength: { c1: '#3b82f6', c2: '#4338ca' },
+  achievements: { c1: '#3b82f6', c2: '#4338ca' },
 };
 
 /* ── SVG canvas constants (match hero) ───────────────── */
@@ -61,9 +61,9 @@ const LAYOUT = [
   { id: 'certificates', angle: 330, side: 'left' },
   { id: 'networks', angle: 30, side: 'right' },
   { id: 'skills', angle: 270, side: 'left' },
-  { id: 'achievements', angle: 90, side: 'right' },
+  { id: 'experience', angle: 90, side: 'right' },
   { id: 'projects', angle: 210, side: 'left' },
-  { id: 'strength', angle: 150, side: 'right' },
+  { id: 'achievements', angle: 150, side: 'right' },
 ];
 
 function xyOf(deg) {
@@ -145,7 +145,7 @@ function OrbitCard({ card, idx }) {
             </ul>
             <Link
               to={card.viewAllUrl}
-              onClick={e => e.stopPropagation()}
+              onClick={e => { e.stopPropagation(); setOpen(false); }}
               style={{ fontSize: 12, fontWeight: 600, color: '#6366f1', textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4 }}
             >
               {card.viewAllLabel}&nbsp;<ArrowRight size={11} />
@@ -232,7 +232,7 @@ function MobOrbitCard({ card }) {
               </li>
             ))}
           </ul>
-          <Link to={card.viewAllUrl} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `linear-gradient(135deg,${g.c1},${g.c2})`, color: '#fff', borderRadius: 10, padding: '9px 16px', fontSize: 12, fontWeight: 700, textDecoration: 'none' }}>
+          <Link to={card.viewAllUrl} onClick={() => setOpen(false)} style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: `linear-gradient(135deg,${g.c1},${g.c2})`, color: '#fff', borderRadius: 10, padding: '9px 16px', fontSize: 12, fontWeight: 700, textDecoration: 'none' }}>
             {card.viewAllLabel} <ArrowRight size={12} />
           </Link>
         </div>

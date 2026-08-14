@@ -8,7 +8,19 @@ export const AdminProvider = ({ children }) => {
     const saved = localStorage.getItem('portfolioData');
     if (saved) {
       try {
-        return { ...initialData, ...JSON.parse(saved) };
+        const parsed = JSON.parse(saved);
+        if (parsed.orbitCards) {
+          parsed.orbitCards = parsed.orbitCards.map(c => {
+            if (c.id === 'strength') return { ...c, id: 'achievements', label: 'Achievements', viewAllUrl: '/achievements' };
+            if (c.id === 'achievements' && (c.label === 'Strength' || c.label === 'strength')) return { ...c, label: 'Achievements' };
+            if (c.id === 'certificates') return { ...c, viewAllUrl: '/certificates' };
+            if (c.id === 'networks') return { ...c, viewAllUrl: '/home#network' };
+            if (c.id === 'achievements' && c.viewAllUrl === '/all-education') return { ...c, id: 'experience', viewAllUrl: '/experience', label: 'Experience' };
+            if (c.id === 'achievements' && c.label === 'Experience') return { ...c, id: 'experience', viewAllUrl: '/experience' };
+            return c;
+          });
+        }
+        return { ...initialData, ...parsed };
       } catch (e) {
         console.error('Error parsing portfolio data:', e);
       }
