@@ -1,23 +1,26 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useBackend as useAdmin } from '../../hooks/useBackend';
-import { LogIn, Mail, ShieldCheck } from 'lucide-react';
+import { useBackend } from '../../hooks/useBackend';
+import { LogIn, Mail, ShieldCheck, AlertCircle } from 'lucide-react';
 import '../../admin.css';
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('');
-  const { login } = useAdmin();
-  const navigate = useNavigate();
-
+  const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const { login } = useBackend();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
     setIsLoading(true);
-    const success = await login(email);
+    const result = await login(email);
     setIsLoading(false);
-    if (success) {
+    if (result.success) {
       navigate('/page/admin/otp');
+    } else {
+      setError(result.error);
     }
   };
 
@@ -33,7 +36,14 @@ const AdminLogin = () => {
         </div>
 
         <h1 className="admin-auth-title">Welcome Back</h1>
-        <p className="admin-auth-subtitle">Enter your email to access the admin panel</p>
+        <p className="admin-auth-subtitle">Enter your admin email to receive an OTP</p>
+
+        {error && (
+          <div className="admin-auth-error">
+            <AlertCircle size={15} style={{ flexShrink: 0 }} />
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           <div>
@@ -54,7 +64,7 @@ const AdminLogin = () => {
           </div>
 
           <button type="submit" className="admin-auth-btn" disabled={isLoading}>
-            {isLoading ? 'Sending OTP...' : 'Continue \u2192'}
+            {isLoading ? 'Sending OTP...' : 'Continue →'}
           </button>
         </form>
 

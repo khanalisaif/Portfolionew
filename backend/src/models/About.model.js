@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 const aboutSchema = new mongoose.Schema({
   careerObjective: { type: String, default: '' },
   quote: { type: String, default: '' },
+  techStack: { type: String, default: '' },
+  descriptions: { type: [String], default: [] },
   stats: [{
     value: { type: String },
     label: { type: String },

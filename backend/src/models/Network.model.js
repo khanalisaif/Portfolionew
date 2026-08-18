@@ -14,7 +14,9 @@ const networkSchema = new mongoose.Schema({
     skill: { type: String },
     skillIcon: { type: String },
     customSkillIconUrl: { type: String, default: '' },
-    angle: { type: Number, default: 0 }
+    angle: { type: Number, default: 0 },
+    ringColor: { type: String },
+    skillColor: { type: String }
   }]
 }, { timestamps: true });
 

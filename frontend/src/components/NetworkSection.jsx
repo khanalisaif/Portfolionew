@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Users, Globe, Server, Search, Cloud, Smartphone } from 'lucide-react';
 import { useFadeUp } from '../hooks/useFadeUp';
-
+import { useBackend } from '../hooks/useBackend';
 // Map icon names to Lucide components
 const skillIconMap = {
   android: Smartphone,
@@ -23,35 +23,13 @@ function polarToXY(angleDeg, radius, cx, cy) {
 }
 
 export default function NetworkSection() {
-  const [networkData, setNetworkData] = useState(null);
-  const [profileData, setProfileData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { data, loading: contextLoading } = useBackend();
+  const networkData = data?.networkData;
+  const profileData = data?.profileData;
+  const loading = contextLoading || !networkData || !profileData;
   const ref = useFadeUp();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { getNetwork, getProfile } = await import('../services/api');
-        const [netRes, profRes] = await Promise.all([
-          getNetwork(),
-          getProfile()
-        ]);
-        setNetworkData(netRes.data);
-        setProfileData(profRes.data);
-      } catch (err) {
-        console.error("Error fetching network data:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
-
   const [scale, setScale] = useState(1);
-
-  if (loading || !networkData || !profileData) return null;
-
-  const { sectionTitle, sectionSubtitle, centerLabel, centerSubLabel, centerAvatar, connections } = networkData;
 
   useEffect(() => {
     const handleResize = () => {
@@ -64,6 +42,10 @@ export default function NetworkSection() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  if (loading) return null;
+
+  const { sectionTitle, sectionSubtitle, centerLabel, centerSubLabel, centerAvatar, connections } = networkData;
+
   // SVG canvas dimensions (make it large enough to fit everything)
   const W = 1000;
   const H = 700;
@@ -73,10 +55,14 @@ export default function NetworkSection() {
   const orbitOuterR = 270; // Distance of the nodes
 
   // Position each connection node
-  const nodes = connections.map(c => ({
-    ...c,
-    ...polarToXY(c.angle, orbitOuterR, cx, cy),
-  }));
+  const nodes = connections.map((c, index) => {
+    const angle = connections.length > 0 ? (360 / connections.length) * index : 0;
+    return {
+      ...c,
+      angle,
+      ...polarToXY(angle, orbitOuterR, cx, cy),
+    };
+  });
 
   return (
     <section id="network" className="section-container" style={{ paddingTop: 0 }}>
@@ -119,170 +105,132 @@ export default function NetworkSection() {
               />
 
               {/* Lines from center to each node */}
-              {nodes.map(node => (
-                <line
-                  key={`line-${node.id}`}
-                  x1={cx} y1={cy}
-                  x2={node.x} y2={node.y}
-                  stroke={node.ringColor}
-                  strokeWidth={1}
-                  opacity={0.5}
-                />
-              ))}
+              {nodes.map(node => {
+                const nodeColor = node.ringColor || node.skillColor || '#6366f1';
+                return (
+                  <line
+                    key={`line-${node.id}`}
+                    x1={cx} y1={cy}
+                    x2={node.x} y2={node.y}
+                    stroke={nodeColor}
+                    strokeWidth={1.5}
+                    opacity={0.5}
+                  />
+                );
+              })}
 
               {/* Colored dot on inner orbit intersection */}
               {nodes.map(node => {
+                const nodeColor = node.ringColor || node.skillColor || '#6366f1';
                 const dot = polarToXY(node.angle, orbitInnerR, cx, cy);
                 return (
                   <circle
                     key={`dot-${node.id}`}
                     cx={dot.x} cy={dot.y} r={4.5}
-                    fill={node.ringColor}
+                    fill={nodeColor}
                   />
                 );
               })}
 
               {/* Center: Me */}
-              <defs>
-                <clipPath id="clip-center">
-                  <circle cx={cx} cy={cy} r={85} />
-                </clipPath>
-              </defs>
-              {/* Center huge soft glow */}
-              <circle cx={cx} cy={cy} r={105}
-                fill="none"
-                stroke="rgba(168,85,247,0.3)"
-                strokeWidth={20}
-                style={{ filter: 'blur(16px)' }}
-              />
-              <circle cx={cx} cy={cy} r={87} fill="white" />
-              <image
-                href={profileData.avatarUrl || centerAvatar}
-                x={cx - 85} y={cy - 85}
-                width={170} height={170}
-                clipPath="url(#clip-center)"
-                preserveAspectRatio="xMidYMid slice"
-              />
-              {/* "Me" card overlapping bottom */}
-              <rect
-                x={cx - 55} y={cy + 70}
-                width={110} height={46}
-                rx={12} ry={12}
-                fill="white"
-                style={{ filter: 'drop-shadow(0 4px 16px rgba(0,0,0,0.06))' }}
-              />
-              <text x={cx} y={cy + 90} textAnchor="middle" fontSize="15" fontWeight="800" fill="#7c3aed" fontFamily="Inter, sans-serif">
-                {centerLabel}
-              </text>
-              <text x={cx} y={cy + 104} textAnchor="middle" fontSize="10.5" fill="#94a3b8" fontFamily="Inter, sans-serif">
-                {centerSubLabel}
-              </text>
+              <foreignObject x={cx - 150} y={cy - 150} width={300} height={300} style={{ overflow: 'visible' }}>
+                <div style={{ width: '100%', height: '100%', position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+                  {/* Huge soft glow behind */}
+                  <div style={{
+                    position: 'absolute',
+                    width: 250, height: 250,
+                    borderRadius: '50%',
+                    background: 'radial-gradient(circle, rgba(168,85,247,0.18) 0%, rgba(168,85,247,0) 70%)',
+                    zIndex: 0
+                  }} />
+                  {/* Profile image with white border */}
+                  <img src={profileData.avatarUrl || centerAvatar} alt="Me" style={{
+                    width: 170, height: 170,
+                    borderRadius: '50%',
+                    objectFit: 'cover',
+                    zIndex: 1,
+                    border: '4px solid white',
+                    boxShadow: '0 4px 20px rgba(0,0,0,0.08)'
+                  }} />
+                  {/* "Me" pill card overlapping the bottom of the image */}
+                  <div style={{
+                    position: 'absolute',
+                    bottom: 30,
+                    backgroundColor: 'white',
+                    borderRadius: 30,
+                    padding: '8px 24px',
+                    boxShadow: '0 8px 24px rgba(0,0,0,0.08)',
+                    zIndex: 2,
+                    textAlign: 'center',
+                    border: '1px solid #f8fafc'
+                  }}>
+                    <div style={{ fontWeight: 800, color: '#7c3aed', fontSize: 16 }}>{centerLabel}</div>
+                    <div style={{ color: '#94a3b8', fontSize: 11, fontWeight: 600, marginTop: 1 }}>{centerSubLabel}</div>
+                  </div>
+                </div>
+              </foreignObject>
 
               {/* Connection nodes (White cards) */}
               {nodes.map(node => {
                 const SkillIcon = skillIconMap[node.skillIcon] || Globe;
                 // Determine layout side based on angle. Left: >180 and <360. Right: 0-180.
                 const isLeft = node.angle > 180 && node.angle < 360;
-                const clipId = `clip-${node.id}`;
                 
-                const cardW = 220;
-                const cardH = 74;
-                const avatarR = 27;
+                const boxW = 280;
+                const boxH = 74;
+                const avatarR = 37;
                 const avatarX = node.x;
                 const avatarY = node.y;
 
-                // Position card so the avatar overlaps its edge slightly (avatar sits on the inner edge of the card)
-                // If it's a left node, the avatar is on the right side of the card.
-                // If it's a right node (or top/bottom right), the avatar is on the left side of the card.
-                const cardX = isLeft ? avatarX - cardW + avatarR : avatarX - avatarR;
-                const cardY = avatarY - cardH / 2;
+                const fX = isLeft ? avatarX - boxW + avatarR : avatarX - avatarR;
+                const fY = avatarY - boxH / 2;
+                
+                const nodeColor = node.ringColor || node.skillColor || '#6366f1';
 
                 return (
                   <g key={node.id} id={`network-node-${node.id}`}>
-                    {/* Card background */}
-                    <rect
-                      x={cardX} y={cardY}
-                      width={cardW} height={cardH}
-                      rx={20} ry={20}
-                      fill="white"
-                      style={{ filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.06))' }}
-                    />
+                    <foreignObject x={fX} y={fY} width={boxW} height={boxH} style={{ overflow: 'visible' }}>
+                      <div style={{
+                        width: boxW, height: boxH,
+                        display: 'flex',
+                        alignItems: 'center',
+                        flexDirection: isLeft ? 'row-reverse' : 'row',
+                        backgroundColor: 'white',
+                        borderRadius: boxH / 2,
+                        boxShadow: '0 8px 24px rgba(0,0,0,0.06)'
+                      }}>
+                        {/* Avatar */}
+                        <div style={{
+                          width: boxH, height: boxH,
+                          borderRadius: '50%',
+                          backgroundColor: 'white',
+                          border: `3px solid ${nodeColor}`,
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                          zIndex: 10, flexShrink: 0,
+                          boxSizing: 'border-box'
+                        }}>
+                          {node.avatar ? (
+                            <img src={node.avatar} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} alt="" />
+                          ) : (
+                            <span style={{ color: nodeColor, fontWeight: 800, fontSize: 24 }}>{node.name?.[0] || '?'}</span>
+                          )}
+                        </div>
 
-                    {/* Name */}
-                    <text
-                      x={isLeft ? cardX + cardW - avatarR * 2 - 16 : cardX + avatarR * 2 + 16}
-                      y={cardY + 26}
-                      textAnchor={isLeft ? 'end' : 'start'}
-                      fontSize="13" fontWeight="800" fill="#0f172a"
-                      fontFamily="Inter, sans-serif"
-                    >
-                      {node.name}
-                    </text>
-
-                    {/* Role */}
-                    <text
-                      x={isLeft ? cardX + cardW - avatarR * 2 - 16 : cardX + avatarR * 2 + 16}
-                      y={cardY + 42}
-                      textAnchor={isLeft ? 'end' : 'start'}
-                      fontSize="10" fill="#64748b"
-                      fontFamily="Inter, sans-serif"
-                    >
-                      {node.role}
-                    </text>
-
-                    {/* Skill chip text & icon */}
-                    <g transform={`translate(${isLeft ? cardX + cardW - avatarR * 2 - 16 - (node.skill.length * 6 + 18) : cardX + avatarR * 2 + 16}, ${cardY + 48})`}>
-                      {node.customSkillIconUrl ? (
-                        <image href={node.customSkillIconUrl} width="12" height="12" y="-1" preserveAspectRatio="xMidYMid meet" />
-                      ) : (
-                        <svg width="14" height="14" fill="none" stroke={node.skillColor} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ overflow: 'visible' }}>
-                          <SkillIcon size={12} />
-                        </svg>
-                      )}
-                      <text
-                        x="18"
-                        y="10"
-                        textAnchor="start"
-                        fontSize="10" fontWeight="700"
-                        fill={node.skillColor}
-                        fontFamily="Inter, sans-serif"
-                      >
-                        {node.skill}
-                      </text>
-                    </g>
-
-                    {/* Avatar circle with colored stroke */}
-                    <defs>
-                      <clipPath id={clipId}>
-                        <circle cx={avatarX} cy={avatarY} r={avatarR} />
-                      </clipPath>
-                    </defs>
-                    <circle cx={avatarX} cy={avatarY} r={avatarR + 2}
-                      fill="white"
-                    />
-                    <circle cx={avatarX} cy={avatarY} r={avatarR + 1}
-                      fill="none"
-                      stroke={node.ringColor}
-                      strokeWidth={2.5}
-                    />
-                    {node.avatar ? (
-                      <image
-                        href={node.avatar}
-                        x={avatarX - avatarR} y={avatarY - avatarR}
-                        width={avatarR * 2} height={avatarR * 2}
-                        clipPath={`url(#${clipId})`}
-                        preserveAspectRatio="xMidYMid slice"
-                      />
-                    ) : (
-                      <text
-                        x={avatarX} y={avatarY + 6}
-                        textAnchor="middle"
-                        fontSize="16" fontWeight="800" fill={node.ringColor}
-                        fontFamily="Inter, sans-serif"
-                      >
-                        {node.name?.[0] || '?'}
-                      </text>
-                    )}
+                        {/* Card Body */}
+                        <div style={{
+                          flex: 1,
+                          padding: isLeft ? '0 16px 0 24px' : '0 24px 0 16px',
+                          display: 'flex', flexDirection: 'column', justifyContent: 'center',
+                          alignItems: isLeft ? 'flex-end' : 'flex-start',
+                        }}>
+                          <div style={{ fontWeight: 800, color: '#0f172a', fontSize: 15 }}>{node.name}</div>
+                          <div style={{ color: '#64748b', fontSize: 12.5, marginTop: 1 }}>{node.role}</div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: 5, color: nodeColor, fontSize: 12, fontWeight: 700, marginTop: 4 }}>
+                            <SkillIcon size={13} strokeWidth={2.5} /> {node.skill}
+                          </div>
+                        </div>
+                      </div>
+                    </foreignObject>
                   </g>
                 );
               })}
@@ -314,7 +262,7 @@ export default function NetworkSection() {
                 <circle cx="90" cy="90" r="84" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="8" filter="url(#net-mob-glow)" />
                 <circle cx="90" cy="90" r="78" fill="url(#net-mob-grad)" className="profile-ring-anim" />
                 <circle cx="90" cy="90" r="71" fill="white" />
-                <image href={profileData.avatarUrl || centerAvatar} x="22" y="22" width="136" height="136" clipPath="url(#net-mob-clip)" preserveAspectRatio="xMidYMid slice" />
+                <image href={profileData.avatarUrl || centerAvatar || undefined} x="22" y="22" width="136" height="136" clipPath="url(#net-mob-clip)" preserveAspectRatio="xMidYMid slice" />
                 {/* Accent dots */}
                 <g style={{ transformOrigin: '90px 90px', animation: 'mobileOrbitSpin 10s linear infinite' }}>
                   <circle cx="90" cy="6" r="4" fill="#a855f7" style={{ filter: 'drop-shadow(0 0 4px #a855f7)' }} />
@@ -339,6 +287,7 @@ export default function NetworkSection() {
           {/* Connections — styled like hero orbit cards */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {connections.map(node => {
+              const nodeColor = node.ringColor || node.skillColor || '#6366f1';
               const SkillIcon = skillIconMap[node.skillIcon] || Globe;
               return (
                 <div
@@ -347,48 +296,34 @@ export default function NetworkSection() {
                     background: 'rgba(255,255,255,0.92)',
                     backdropFilter: 'blur(16px)',
                     WebkitBackdropFilter: 'blur(16px)',
-                    borderRadius: 16,
-                    border: '1px solid rgba(255,255,255,0.95)',
-                    padding: '12px 16px',
+                    borderRadius: 40,
+                    padding: '8px 16px 8px 8px',
                     display: 'flex',
                     alignItems: 'center',
                     gap: 14,
                     boxShadow: '0 4px 20px rgba(99,102,241,0.07), 0 1px 4px rgba(0,0,0,0.04)',
+                    border: '1px solid rgba(255,255,255,0.95)'
                   }}
                 >
-                  {/* Avatar with colored ring */}
+                  {/* Avatar */}
                   <div style={{ position: 'relative', flexShrink: 0 }}>
-                    {node.avatar ? (
-                      <img
-                        src={node.avatar}
-                        alt={node.name}
-                        style={{
-                          width: 52, height: 52, borderRadius: '50%',
-                          border: `2.5px solid ${node.ringColor}`,
-                          objectFit: 'cover',
-                          display: 'block',
-                        }}
-                      />
-                    ) : (
-                      <div
-                        style={{
-                          width: 52, height: 52, borderRadius: '50%',
-                          border: `2.5px solid ${node.ringColor}`,
-                          background: '#f1f5f9',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                          fontSize: 18, fontWeight: 800, color: node.ringColor
-                        }}
-                      >
-                        {node.name?.[0] || '?'}
-                      </div>
-                    )}
+                    <div style={{
+                      width: 58, height: 58, borderRadius: '50%',
+                      border: `3px solid ${nodeColor}`,
+                      background: 'white',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      fontSize: 22, fontWeight: 800, color: nodeColor,
+                      boxSizing: 'border-box'
+                    }}>
+                      {node.avatar ? <img src={node.avatar} style={{ width: '100%', height: '100%', borderRadius: '50%', objectFit: 'cover' }} alt="" /> : node.name?.[0] || '?'}
+                    </div>
                   </div>
                   {/* Info */}
-                  <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontSize: 14, fontWeight: 700, color: '#0f172a', lineHeight: 1.2 }}>{node.name}</div>
-                    <div style={{ fontSize: 12, color: '#64748b', marginTop: 2, lineHeight: 1.3 }}>{node.role}</div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 5, fontSize: 11, fontWeight: 700, color: node.skillColor }}>
-                      <SkillIcon size={12} />
+                  <div style={{ flex: 1, minWidth: 0, paddingRight: 8 }}>
+                    <div style={{ fontSize: 15, fontWeight: 800, color: '#0f172a', lineHeight: 1.2 }}>{node.name}</div>
+                    <div style={{ fontSize: 12.5, color: '#64748b', marginTop: 2, lineHeight: 1.3 }}>{node.role}</div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 4, fontSize: 12, fontWeight: 700, color: nodeColor }}>
+                      <SkillIcon size={13} strokeWidth={2.5} />
                       {node.skill}
                     </div>
                   </div>

@@ -1,13 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useBackend as useAdmin } from '../../hooks/useBackend';
+import { useBackend } from '../../hooks/useBackend';
 import { ShieldCheck, AlertCircle } from 'lucide-react';
 import '../../admin.css';
 
 const AdminOtp = () => {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [error, setError] = useState('');
-  const { verifyOtp } = useAdmin();
+  const [isLoading, setIsLoading] = useState(false);
+  const { verifyOtp } = useBackend();
   const navigate = useNavigate();
   const inputRefs = useRef([]);
 
@@ -16,7 +17,7 @@ const AdminOtp = () => {
   }, []);
 
   const handleChange = (index, value) => {
-    if (value.length > 1) return;
+    if (!/^[0-9]?$/.test(value)) return; // only digits
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
@@ -29,18 +30,33 @@ const AdminOtp = () => {
     }
   };
 
-  const [isLoading, setIsLoading] = useState(false);
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData('text').replace(/\D/g, '').slice(0, 6);
+    if (pasted.length > 0) {
+      const newOtp = [...otp];
+      pasted.split('').forEach((ch, i) => { if (i < 6) newOtp[i] = ch; });
+      setOtp(newOtp);
+      const nextIndex = Math.min(pasted.length, 5);
+      inputRefs.current[nextIndex]?.focus();
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     const otpString = otp.join('');
+    if (otpString.length < 6) {
+      setError('Please enter the full 6-digit code.');
+      return;
+    }
+    setError('');
     setIsLoading(true);
-    const success = await verifyOtp(otpString);
+    const result = await verifyOtp(otpString);
     setIsLoading(false);
-    if (success) {
+    if (result.success) {
       navigate('/page/admin');
     } else {
-      setError('Invalid OTP or OTP expired.');
+      setError(result.error);
       setOtp(['', '', '', '', '', '']);
       inputRefs.current[0]?.focus();
     }
@@ -69,7 +85,7 @@ const AdminOtp = () => {
         )}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-          <div className="admin-otp-grid">
+          <div className="admin-otp-grid" onPaste={handlePaste}>
             {otp.map((digit, index) => (
               <input
                 key={index}

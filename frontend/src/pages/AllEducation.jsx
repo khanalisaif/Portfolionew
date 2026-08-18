@@ -38,6 +38,7 @@ function CertCarousel({ certificates }) {
 export default function AllEducation() {
   const { data } = useAdmin();
   const allEducationData = data?.allEducationData || data?.educationData?.entries || [];
+  const profileData = data?.profileData;
 
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(allEducationData.length / ITEMS_PER_PAGE) || 1;
@@ -47,7 +48,7 @@ export default function AllEducation() {
     <div className="all-education-page">
       {/* Header */}
       <div className="ae-header-block">
-        <Link to="/" className="back-link">
+        <Link to="/home" className="back-link">
           <ArrowLeft size={16} /> Back to Home
         </Link>
         <div className="ae-header-row">
@@ -60,9 +61,17 @@ export default function AllEducation() {
               <p className="ae-page-subtitle">My academic background and achievements</p>
             </div>
           </div>
-          <button className="ae-download-btn">
-            <Download size={16} /> Download Resume
-          </button>
+          {profileData?.resumeUrl && (
+            <a
+              href={profileData.resumeUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="ae-download-btn"
+              style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: 8 }}
+            >
+              <Download size={16} /> Download Resume
+            </a>
+          )}
         </div>
       </div>
 
@@ -152,3 +161,4 @@ export default function AllEducation() {
     </div>
   );
 }
+

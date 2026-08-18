@@ -25,7 +25,61 @@ const categoryColors = {
 export default function AllProjects() {
   const { data } = useAdmin();
   const allProjectsData = data?.allProjectsData || [];
-  const allProjectsSidebar = data?.allProjectsSidebar || { overview: [], technologies: [], categories: [] };
+  const projectsData = data?.projectsData || { sectionTitle: 'Projects', sectionSubtitle: 'Things I\'ve built' };
+  
+  // Dynamically calculate sidebar stats from allProjectsData
+  const calculateSidebar = (projects) => {
+    // Categories count
+    const catMap = { android: 0, ios: 0, web: 0, other: 0 };
+    projects.forEach(p => {
+      if (catMap[p.category] !== undefined) catMap[p.category]++;
+      else catMap.other++;
+    });
+    
+    // Total downloads & ratings
+    let totalDownloads = 0;
+    let avgRating = 0;
+    let ratingCount = 0;
+    
+    projects.forEach(p => {
+      p.stats?.forEach(s => {
+        if (s.label === 'Downloads') {
+          const val = parseInt(s.value.replace(/[^0-9]/g, ''));
+          if (!isNaN(val)) totalDownloads += val;
+        }
+        if (s.label === 'Rating') {
+          const val = parseFloat(s.value);
+          if (!isNaN(val)) {
+            avgRating += val;
+            ratingCount++;
+          }
+        }
+      });
+    });
+    
+    avgRating = ratingCount > 0 ? (avgRating / ratingCount).toFixed(1) : '0';
+
+    return {
+      overview: [
+        { label: 'Total Projects', value: projects.length.toString(), color: 'primary' },
+        { label: 'Downloads', value: totalDownloads > 1000 ? (totalDownloads/1000).toFixed(1)+'k+' : totalDownloads.toString(), color: 'purple' },
+        { label: 'Avg Rating', value: avgRating.toString(), color: 'primary' },
+      ],
+      technologies: [
+        { name: 'React', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/react/react-original.svg' },
+        { name: 'Node.js', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg' },
+        { name: 'MongoDB', icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/mongodb/mongodb-original.svg' },
+      ],
+      categories: [
+        { id: 'android', label: 'Android Apps', count: catMap.android, color: '#22c55e' },
+        { id: 'ios', label: 'iOS Apps', count: catMap.ios, color: '#3b82f6' },
+        { id: 'web', label: 'Web Apps', count: catMap.web, color: '#3b82f6' },
+        { id: 'other', label: 'Other', count: catMap.other, color: '#64748b' }
+      ]
+    };
+  };
+
+  const allProjectsSidebar = calculateSidebar(allProjectsData);
   
   const [activeTab, setActiveTab] = useState('all');
   const [currentPage, setCurrentPage] = useState(1);
@@ -263,3 +317,4 @@ export default function AllProjects() {
     </div>
   );
 }
+

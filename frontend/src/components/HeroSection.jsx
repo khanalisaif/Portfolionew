@@ -4,7 +4,7 @@ import {
   Download, Send, ChevronDown, ChevronRight, ArrowRight,
   FileText, Users, Code2, Trophy, Briefcase, Dumbbell
 } from 'lucide-react';
-import { getProfile, getOrbit } from '../services/api';
+import { useBackend } from '../hooks/useBackend';
 
 // ── Icon mapping ──────────────────────────────────
 const ICONS = {
@@ -33,15 +33,26 @@ const CY = 265;
 const OR = 210;      // orbit radius
 const PR = 108;      // profile photo radius
 
-// ── Card layout: angle from top (0°), clockwise ──
-const LAYOUT = [
-  { id: 'certificates', angle: 330, side: 'left' },
-  { id: 'networks', angle: 30, side: 'right' },
-  { id: 'skills', angle: 270, side: 'left' },
-  { id: 'experience', angle: 90, side: 'right' },
-  { id: 'projects', angle: 210, side: 'left' },
-  { id: 'achievements', angle: 150, side: 'right' },
-];
+const POS_MAP = {
+  'top-left': { angle: 330, side: 'left' },
+  'top-right': { angle: 30, side: 'right' },
+  'mid-left': { angle: 270, side: 'left' },
+  'mid-right': { angle: 90, side: 'right' },
+  'bot-left': { angle: 210, side: 'left' },
+  'bot-right': { angle: 150, side: 'right' }
+};
+
+const ICON_BG_MAP = {
+  'from-blue-400 to-blue-600': { c1: '#60a5fa', c2: '#2563eb' },
+  'from-cyan-400 to-cyan-600': { c1: '#22d3ee', c2: '#0891b2' },
+  'from-indigo-500 to-purple-600': { c1: '#6366f1', c2: '#9333ea' },
+  'from-purple-500 to-pink-500': { c1: '#a855f7', c2: '#ec4899' },
+  'from-violet-500 to-purple-700': { c1: '#8b5cf6', c2: '#7e22ce' },
+  'from-blue-500 to-indigo-600': { c1: '#3b82f6', c2: '#4f46e5' },
+  'from-green-400 to-emerald-600': { c1: '#4ade80', c2: '#059669' },
+  'from-amber-400 to-orange-500': { c1: '#fbbf24', c2: '#f97316' },
+  'from-rose-400 to-red-600': { c1: '#fb7185', c2: '#dc2626' },
+};
 
 // ── Helpers ───────────────────────────────────────
 function xy(deg) {
@@ -59,7 +70,7 @@ const CARD_W = 200;
 function MobileOrbitCard({ card }) {
   const [open, setOpen] = useState(false);
   const Icon = ICONS[card.icon] || FileText;
-  const g = GRADIENTS[card.id] || GRADIENTS.skills;
+  const g = ICON_BG_MAP[card.iconBg] || GRADIENTS[card.id] || GRADIENTS.skills;
 
   return (
     <div style={{
@@ -155,10 +166,9 @@ function MobileOrbitCard({ card }) {
 // ── Single orbit card component ───────────────────
 function OrbitCard({ card, idx }) {
   const [open, setOpen] = useState(false);
-  const layout = LAYOUT.find(l => l.id === card.id);
-  if (!layout) return null;
+  const layout = POS_MAP[card.position] || POS_MAP['mid-right'];
   const Icon = ICONS[card.icon] || FileText;
-  const g = GRADIENTS[card.id] || GRADIENTS.skills;
+  const g = ICON_BG_MAP[card.iconBg] || GRADIENTS[card.id] || GRADIENTS.skills;
   const [ox, oy] = xy(layout.angle);
 
   // Expanded card dimensions
@@ -302,28 +312,11 @@ function OrbitCard({ card, idx }) {
 
 // ── Main Hero Section ─────────────────────────────
 export default function HeroSection() {
-  const [profileData, setProfileData] = useState(null);
-  const [orbitCards, setOrbitCards] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { data, loading: contextLoading } = useBackend();
+  const profileData = data?.profileData;
+  const orbitCards = data?.orbitCards || [];
+  const loading = contextLoading || !profileData;
   const [scale, setScale] = useState(1);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const [profileRes, orbitRes] = await Promise.all([
-          getProfile(),
-          getOrbit()
-        ]);
-        setProfileData(profileRes.data);
-        setOrbitCards(orbitRes.data || []);
-      } catch (err) {
-        console.error("Error fetching hero data:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
 
   useEffect(() => {
     const handleResize = () => {
@@ -470,7 +463,7 @@ export default function HeroSection() {
 
             {/* ── Profile photo ── */}
             <image
-              href={avatarUrl}
+              href={avatarUrl || undefined}
               x={CX - PR} y={CY - PR}
               width={PR * 2} height={PR * 2}
               clipPath="url(#photo-clip)"
@@ -536,7 +529,7 @@ export default function HeroSection() {
             <circle cx="100" cy="100" r="95" fill="none" stroke="rgba(255,255,255,0.7)" strokeWidth="8" filter="url(#mob-ring-glow)" />
             <circle cx="100" cy="100" r="89" fill="url(#mob-ring-grad)" className="profile-ring-anim" />
             <circle cx="100" cy="100" r="81" fill="white" />
-            <image href={avatarUrl} x="22" y="22" width="156" height="156" clipPath="url(#mob-photo-clip)" preserveAspectRatio="xMidYMid slice" />
+            <image href={avatarUrl || undefined} x="22" y="22" width="156" height="156" clipPath="url(#mob-photo-clip)" preserveAspectRatio="xMidYMid slice" />
             <g style={{ transformOrigin: '100px 100px', animation: 'mobileOrbitSpin 10s linear infinite' }}>
               <circle cx="100" cy="5" r="4.5" fill="#3b82f6" style={{ filter: 'drop-shadow(0 0 4px #3b82f6)' }} />
               <circle cx="195" cy="100" r="4.5" fill="#06b6d4" style={{ filter: 'drop-shadow(0 0 4px #06b6d4)' }} />

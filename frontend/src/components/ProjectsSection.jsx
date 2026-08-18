@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Briefcase, ChevronRight, Users, Download, Star, Calendar, ExternalLink, Eye, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { getProjects } from '../services/api';
+import { useBackend } from '../hooks/useBackend';
 import { useFadeUp } from '../hooks/useFadeUp';
 
 const statIconMap = {
@@ -18,26 +18,17 @@ const projectColors = [
 
 export default function ProjectsSection() {
   const ref = useFadeUp();
-  const [projectsData, setProjectsData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { data, loading: contextLoading } = useBackend();
+  
+  const pageInfo = data?.projectsData;
+  const allProjects = data?.allProjectsData;
+  const loading = contextLoading || !pageInfo || !allProjects;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await getProjects();
-        setProjectsData(res.data);
-      } catch (err) {
-        console.error("Error fetching projects data:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+  if (loading) return null;
 
-  if (loading || !projectsData) return null;
-
-  const { sectionTitle, sectionSubtitle, viewAllUrl, featured } = projectsData;
+  const sectionTitle = pageInfo?.sectionTitle || 'Featured Projects';
+  const sectionSubtitle = pageInfo?.sectionSubtitle || 'Some of my best work';
+  const featured = allProjects?.filter(p => p.isFeatured) || [];
 
   return (
     <section id="projects" className="section-container" style={{ paddingTop: 0 }}>

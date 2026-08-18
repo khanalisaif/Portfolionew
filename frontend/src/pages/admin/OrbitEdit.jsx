@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useBackend as useAdmin } from '../../hooks/useBackend';
+import { useBackend } from '../../hooks/useBackend';
 import ImageUpload from '../../components/ImageUpload';
-import { Navigation, Save, ChevronDown, ChevronUp, CheckCircle } from 'lucide-react';
+import { Navigation, Save, ChevronDown, ChevronUp, CheckCircle, AlertCircle, Loader2, Trash2, Plus } from 'lucide-react';
 import '../../admin.css';
 
 const ICON_OPTIONS = [
@@ -32,21 +32,50 @@ const GRADIENTS = [
 const POSITIONS = ['top-left','top-right','mid-left','mid-right','bot-left','bot-right'];
 
 const OrbitEdit = () => {
-  const { data, updateData } = useAdmin();
+  const { data, updateData } = useBackend();
   const [cards, setCards] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
 
   useEffect(() => { if (data.orbitCards) setCards(data.orbitCards); }, [data.orbitCards]);
 
   const handleChange = (id, field, value) => setCards(cards.map(c => c.id === id ? { ...c, [field]: value } : c));
   const handleItemsChange = (id, value) => handleChange(id, 'items', value.split('\n').map(i => i.trim()).filter(Boolean));
 
-  const handleSubmit = (e) => {
+  const addCard = () => {
+    const newCard = {
+      id: `card-${Date.now()}`,
+      label: 'New Card',
+      sublabel: 'Short description',
+      icon: 'star',
+      iconBg: 'from-blue-500 to-indigo-600',
+      position: 'mid-right',
+      items: [],
+      viewAllLabel: 'View details',
+      viewAllUrl: '/'
+    };
+    setCards([...cards, newCard]);
+    setExpandedId(newCard.id);
+  };
+
+  const removeCard = (id) => {
+    setCards(cards.filter(c => c.id !== id));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    updateData('orbitCards', cards);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    setSaving(true);
+    setSaveError('');
+    const result = await updateData('orbitCards', cards);
+    setSaving(false);
+    if (result.success) {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } else {
+      setSaveError(result.error);
+    }
   };
 
   return (
@@ -68,27 +97,42 @@ const OrbitEdit = () => {
         </div>
       </div>
 
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8 }}>
+        <h3 style={{ fontSize: 13, fontWeight: 700, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          Orbit Cards ({cards.length})
+        </h3>
+        <button type="button" onClick={addCard} className="a-btn a-btn-sm a-btn-outline" style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+          <Plus size={14} /> Add Card
+        </button>
+      </div>
+
       {/* Cards */}
-      {cards.map(card => {
-        const isOpen = expandedId === card.id;
-        const gradStyle = GRADIENTS.find(g => g.value === card.iconBg)?.style || 'linear-gradient(135deg,#6366f1,#4f46e5)';
-        return (
-          <div key={card.id} className={`a-accordion${isOpen ? ' open' : ''}`}>
-            <button type="button" className="a-accordion-header" onClick={() => setExpandedId(isOpen ? null : card.id)}>
-              <div className="a-accordion-avatar" style={{ background: gradStyle, border: 'none' }}>
-                {card.customIconUrl
-                  ? <img src={card.customIconUrl} alt="" style={{ width: '65%', height: '65%', objectFit: 'contain' }} />
-                  : <span style={{ fontSize: 18 }}>{ICON_OPTIONS.find(i => i.value === card.icon)?.label?.split(' ')[0] || '📌'}</span>
-                }
-              </div>
-              <div className="a-accordion-info">
-                <h4>{card.label}</h4>
-                <p>{card.position} &bull; {card.items?.length || 0} items</p>
-              </div>
-              <div className="a-accordion-actions">
-                <span style={{ fontSize: 11, fontWeight: 600, color: '#64748b', background: '#f1f5f9', padding: '3px 8px', borderRadius: 6, display: 'none' }}
-                  className="position-badge">{card.position}</span>
-                <div className={`a-chevron${isOpen ? ' open' : ''}`}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        {cards.map(card => {
+          const isOpen = expandedId === card.id;
+          const gradStyle = GRADIENTS.find(g => g.value === card.iconBg)?.style || 'linear-gradient(135deg,#6366f1,#4f46e5)';
+          return (
+            <div key={card.id} className={`a-accordion${isOpen ? ' open' : ''}`}>
+              <button type="button" className="a-accordion-header" onClick={() => setExpandedId(isOpen ? null : card.id)}>
+                <div className="a-accordion-avatar" style={{ background: gradStyle, border: 'none' }}>
+                  {card.customIconUrl
+                    ? <img src={card.customIconUrl} alt="" style={{ width: '65%', height: '65%', objectFit: 'contain' }} />
+                    : <span style={{ fontSize: 18 }}>{ICON_OPTIONS.find(i => i.value === card.icon)?.label?.split(' ')[0] || '📌'}</span>
+                  }
+                </div>
+                <div className="a-accordion-info">
+                  <h4>{card.label}</h4>
+                  <p>{card.position} &bull; {card.items?.length || 0} items</p>
+                </div>
+                <div className="a-accordion-actions">
+                  <span
+                    onClick={(e) => { e.stopPropagation(); removeCard(card.id); }}
+                    className="a-btn-icon danger"
+                    style={{ width: 28, height: 28 }}
+                  >
+                    <Trash2 size={14} />
+                  </span>
+                  <div className={`a-chevron${isOpen ? ' open' : ''}`}>
                   {isOpen ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
                 </div>
               </div>
@@ -107,12 +151,17 @@ const OrbitEdit = () => {
                   </div>
                   <div className="a-field">
                     <label className="a-label">Icon Type</label>
-                    <p className="a-hint">Choose icon (or upload custom image below)</p>
                     <select value={card.icon} onChange={e => handleChange(card.id,'icon',e.target.value)} className="a-select">
                       {ICON_OPTIONS.map(o => <option key={o.value} value={o.value}>{o.label}</option>)}
                     </select>
                   </div>
                   <div className="a-field">
+                    <label className="a-label">Icon Color (Gradient)</label>
+                    <select value={card.iconBg || 'from-blue-500 to-indigo-600'} onChange={e => handleChange(card.id,'iconBg',e.target.value)} className="a-select">
+                      {GRADIENTS.map(g => <option key={g.value} value={g.value}>{g.label}</option>)}
+                    </select>
+                  </div>
+                  <div className="a-field" style={{ gridColumn: '1 / -1' }}>
                     <label className="a-label">Position</label>
                     <select value={card.position} onChange={e => handleChange(card.id,'position',e.target.value)} className="a-select">
                       {POSITIONS.map(p => <option key={p} value={p}>{p}</option>)}
@@ -159,15 +208,18 @@ const OrbitEdit = () => {
           </div>
         );
       })}
+      </div>
 
       <div className="a-save-bar">
-        <button type="submit" className={`a-btn ${saved ? 'a-btn-success' : 'a-btn-primary'}`}>
-          {saved ? <><CheckCircle size={17} /> Saved!</> : <><Save size={17} /> Save Orbit Cards</>}
+        <button type="submit" className={`a-btn ${saved ? 'a-btn-success' : 'a-btn-primary'}`} disabled={saving}>
+          {saving ? <><Loader2 size={17} style={{ animation: 'spin 1s linear infinite' }} /> Saving...</> : saved ? <><CheckCircle size={17} /> Saved!</> : <><Save size={17} /> Save Orbit Cards</>}
         </button>
         {saved && <span className="a-save-success-msg"><CheckCircle size={14} /> Changes applied.</span>}
+        {saveError && <span style={{ color: '#ef4444', fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}><AlertCircle size={14} />{saveError}</span>}
       </div>
     </form>
   );
 };
 
 export default OrbitEdit;
+

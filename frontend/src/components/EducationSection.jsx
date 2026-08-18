@@ -1,27 +1,14 @@
 import { useState, useEffect } from 'react';
 import { GraduationCap, MapPin, ChevronRight, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { getEducation } from '../services/api';
+import { useBackend } from '../hooks/useBackend';
 import { useFadeUp } from '../hooks/useFadeUp';
 
 export default function EducationSection() {
-  const [educationData, setEducationData] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { data, loading: contextLoading } = useBackend();
+  const educationData = data?.educationData;
+  const loading = contextLoading || !educationData;
   const ref = useFadeUp();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await getEducation();
-        setEducationData(res.data);
-      } catch (err) {
-        console.error("Error fetching education data:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
 
   if (loading || !educationData) return null;
 

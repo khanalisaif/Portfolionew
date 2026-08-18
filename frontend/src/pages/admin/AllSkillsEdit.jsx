@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useBackend as useAdmin } from '../../hooks/useBackend';
+import { useBackend } from '../../hooks/useBackend';
 import ImageUpload from '../../components/ImageUpload';
-import { Database, Save, Plus, Trash2, CheckCircle, ChevronDown, ChevronUp, Layers } from 'lucide-react';
+import { Database, Save, Plus, Trash2, CheckCircle, ChevronDown, ChevronUp, Layers, AlertCircle, Loader2 } from 'lucide-react';
 import '../../admin.css';
 
 const AllSkillsEdit = () => {
-  const { data, updateData } = useAdmin();
+  const { data, updateData } = useBackend();
   
   // States
   const [categories, setCategories] = useState([]);
@@ -13,6 +13,8 @@ const AllSkillsEdit = () => {
   const [activeTab, setActiveTab] = useState('categories');
   const [expandedCatId, setExpandedCatId] = useState(null);
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
 
   useEffect(() => {
     if (data.allSkillsCategories) setCategories(data.allSkillsCategories);
@@ -59,12 +61,21 @@ const AllSkillsEdit = () => {
   const removeBreakdown = (catId, i) => updateDetailed(catId, 'breakdownItems', (detailed[catId]?.breakdownItems || []).filter((_, idx) => idx !== i));
   const updatePoints = (catId, i, text) => updateBreakdown(catId, i, 'points', text.split('\n').map(p => p.trim()).filter(Boolean));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    updateData('allSkillsCategories', categories);
-    updateData('allSkillsDetailed', detailed);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    setSaving(true);
+    setSaveError('');
+    // Save categories array → PUT /api/skills/categories
+    const r1 = await updateData('allSkillsCategories', categories);
+    // Save detailed object map → PUT /api/skills/detailed
+    const r2 = await updateData('allSkillsDetailed', detailed);
+    setSaving(false);
+    if (r1.success && r2.success) {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } else {
+      setSaveError(r1.error || r2.error || 'Save failed.');
+    }
   };
 
   return (
@@ -228,13 +239,23 @@ const AllSkillsEdit = () => {
       )}
 
       <div className="a-save-bar">
-        <button type="submit" className={`a-btn ${saved ? 'a-btn-success' : 'a-btn-slate'}`}>
-          {saved ? <><CheckCircle size={17} /> Saved!</> : <><Save size={17} /> Save Detailed Skills</>}
+        <button type="submit" className={`a-btn ${saved ? 'a-btn-success' : 'a-btn-slate'}`} disabled={saving}>
+          {saving
+            ? <><Loader2 size={17} style={{ animation: 'spin 1s linear infinite' }} /> Saving...</>
+            : saved
+            ? <><CheckCircle size={17} /> Saved!</>
+            : <><Save size={17} /> Save Detailed Skills</>}
         </button>
         {saved && <span className="a-save-success-msg"><CheckCircle size={14} /> Changes applied.</span>}
+        {saveError && (
+          <span style={{ color: '#ef4444', fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <AlertCircle size={14} />{saveError}
+          </span>
+        )}
       </div>
     </form>
   );
 };
 
 export default AllSkillsEdit;
+

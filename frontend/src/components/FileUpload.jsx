@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Upload, Link as LinkIcon, FileText, X, CheckCircle2 } from 'lucide-react';
-import { apiService } from '../services/api';
+import { uploadFile } from "../services/api";
+import { showToast } from './Toast';
 import '../admin.css';
 
 const FileUpload = ({ value, onChange, label, hint, className = '' }) => {
@@ -13,23 +14,25 @@ const FileUpload = ({ value, onChange, label, hint, className = '' }) => {
   const processFile = async (file) => {
     if (!file) return;
     if (file.size > 5 * 1024 * 1024) {
-      alert('File size should be under 5MB.');
+      showToast('File size should be under 5MB.', 'warning');
       return;
     }
     
     setIsUploading(true);
     
     try {
-      const { ok, data } = await apiService.uploadFile(file);
+      const formData = new FormData();
+      formData.append('file', file);
+      const res = await uploadFile(formData);
       
-      if (ok) {
-        onChange(data.url);
+      if (res.data?.url) {
+        onChange(res.data.url);
       } else {
-        alert(data.message || 'Error uploading file');
+        showToast('Error uploading file. Please try again.', 'error');
       }
     } catch (err) {
       console.error('Upload failed:', err);
-      alert('Failed to upload file. Please try again.');
+      showToast('Failed to upload file. Please try again.', 'error');
     } finally {
       setIsUploading(false);
     }

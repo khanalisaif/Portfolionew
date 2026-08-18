@@ -57,14 +57,26 @@ const GRADIENTS = {
 const SW = 620, SH = 540;
 const CX = SW / 2, CY = 265, OR = 200, PR = 104;
 
-const LAYOUT = [
-  { id: 'certificates', angle: 330, side: 'left' },
-  { id: 'networks', angle: 30, side: 'right' },
-  { id: 'skills', angle: 270, side: 'left' },
-  { id: 'experience', angle: 90, side: 'right' },
-  { id: 'projects', angle: 210, side: 'left' },
-  { id: 'achievements', angle: 150, side: 'right' },
-];
+const POS_MAP = {
+  'top-left': { angle: 330, side: 'left' },
+  'top-right': { angle: 30, side: 'right' },
+  'mid-left': { angle: 270, side: 'left' },
+  'mid-right': { angle: 90, side: 'right' },
+  'bot-left': { angle: 210, side: 'left' },
+  'bot-right': { angle: 150, side: 'right' }
+};
+
+const ICON_BG_MAP = {
+  'from-blue-400 to-blue-600': { c1: '#60a5fa', c2: '#2563eb' },
+  'from-cyan-400 to-cyan-600': { c1: '#22d3ee', c2: '#0891b2' },
+  'from-indigo-500 to-purple-600': { c1: '#6366f1', c2: '#9333ea' },
+  'from-purple-500 to-pink-500': { c1: '#a855f7', c2: '#ec4899' },
+  'from-violet-500 to-purple-700': { c1: '#8b5cf6', c2: '#7e22ce' },
+  'from-blue-500 to-indigo-600': { c1: '#3b82f6', c2: '#4f46e5' },
+  'from-green-400 to-emerald-600': { c1: '#4ade80', c2: '#059669' },
+  'from-amber-400 to-orange-500': { c1: '#fbbf24', c2: '#f97316' },
+  'from-rose-400 to-red-600': { c1: '#fb7185', c2: '#dc2626' },
+};
 
 function xyOf(deg) {
   const rad = (deg - 90) * Math.PI / 180;
@@ -79,11 +91,9 @@ const EXP_H = 140;
 /* ── Desktop orbit card (exact copy of HeroSection style) ── */
 function OrbitCard({ card, idx }) {
   const [open, setOpen] = useState(false);
-  const layout = LAYOUT.find(l => l.id === card.id);
-  if (!layout) return null;
-
+  const layout = POS_MAP[card.position] || POS_MAP['mid-right'];
   const Icon = ALL_ICONS[card.icon] || FileText;
-  const g = GRADIENTS[card.id] || GRADIENTS.skills;
+  const g = ICON_BG_MAP[card.iconBg] || GRADIENTS[card.id] || GRADIENTS.skills;
   const [ox, oy] = xyOf(layout.angle);
 
   return (
@@ -198,7 +208,7 @@ function OrbitCard({ card, idx }) {
 function MobOrbitCard({ card }) {
   const [open, setOpen] = useState(false);
   const Icon = ALL_ICONS[card.icon] || FileText;
-  const g = GRADIENTS[card.id] || GRADIENTS.skills;
+  const g = ICON_BG_MAP[card.iconBg] || GRADIENTS[card.id] || GRADIENTS.skills;
 
   return (
     <div style={{
@@ -336,17 +346,27 @@ export default function AboutPage() {
               {titles.map((t, i) => <span key={i} className="ap-title-line">{t}</span>)}
             </div>
 
-            <p className="ap-tech">Java • Kotlin • Swift • UIKit • MVVM • REST APIs</p>
+            <p className="ap-tech">{aboutPageData.techStack || 'Java • Kotlin • Swift • UIKit • MVVM • REST APIs'}</p>
 
-            <div className="ap-desc">
-              <p>I am a Mobile Application Developer with over 3 years of experience building high-performance Android applications and expanding into native iOS development.</p>
-            </div>
-            <div className="ap-desc">
-              <p>I have contributed to <a href="#">40+ production applications</a> across multiple domains including transportation, e-commerce, fintech, and service-based platforms.</p>
-            </div>
-            <div className="ap-desc">
-              <p>I love solving real-world problems through clean architecture, modern technologies, and exceptional user experiences.</p>
-            </div>
+            {aboutPageData.descriptions && aboutPageData.descriptions.length > 0 ? (
+              aboutPageData.descriptions.filter(d => d.trim()).map((desc, i) => (
+                <div key={i} className="ap-desc">
+                  <p dangerouslySetInnerHTML={{ __html: desc.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>') }} />
+                </div>
+              ))
+            ) : (
+              <>
+                <div className="ap-desc">
+                  <p>I am a Mobile Application Developer with over 3 years of experience building high-performance Android applications and expanding into native iOS development.</p>
+                </div>
+                <div className="ap-desc">
+                  <p>I have contributed to <a href="#">40+ production applications</a> across multiple domains including transportation, e-commerce, fintech, and service-based platforms.</p>
+                </div>
+                <div className="ap-desc">
+                  <p>I love solving real-world problems through clean architecture, modern technologies, and exceptional user experiences.</p>
+                </div>
+              </>
+            )}
 
             <div className="ap-divider" />
 
@@ -434,7 +454,7 @@ export default function AboutPage() {
 
                 {/* photo */}
                 <image
-                  href={avatarUrl}
+                  href={avatarUrl || undefined}
                   x={CX - PR} y={CY - PR} width={PR * 2} height={PR * 2}
                   clipPath="url(#ap-photo-clip)"
                   preserveAspectRatio="xMidYMid slice"
@@ -521,3 +541,4 @@ export default function AboutPage() {
     </div>
   );
 }
+

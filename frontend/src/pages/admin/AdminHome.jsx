@@ -1,5 +1,5 @@
 import React from 'react';
-import { useBackend as useAdmin } from '../../hooks/useBackend';
+import { useBackend } from '../../hooks/useBackend';
 import { Link } from 'react-router-dom';
 import { User, BookOpen, Wrench, Briefcase, Network, Navigation, ChevronRight } from 'lucide-react';
 import '../../admin.css';
@@ -24,7 +24,7 @@ const gradients = {
 };
 
 const AdminHome = () => {
-  const { data } = useAdmin();
+  const { data } = useBackend();
   const pd = data.profileData;
   const ed = data.educationData;
   const sd = data.skillsData;
@@ -63,7 +63,7 @@ const AdminHome = () => {
               Welcome back, {pd?.nameParts?.first || pd?.name || 'Admin'}!
             </h2>
             <p className="admin-welcome-desc">
-              All edits you make here are instantly reflected on your live portfolio. Data is saved to your browser's local storage.
+              All edits you make here are saved directly to the backend database and instantly reflected on your live portfolio.
             </p>
           </div>
         </div>

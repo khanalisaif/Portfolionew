@@ -8,7 +8,8 @@ const allSkillsDetailedSchema = new mongoose.Schema({
   meta: [{
     label: { type: String },
     value: { type: String },
-    icon: { type: String }
+    icon: { type: String },
+    customIconUrl: { type: String, default: '' }
   }],
   breakdownCount: { type: Number, default: 0 },
   breakdownItems: [{

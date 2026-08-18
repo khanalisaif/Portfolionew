@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { useBackend as useAdmin } from '../../hooks/useBackend';
+import { useBackend } from '../../hooks/useBackend';
 import ImageUpload from '../../components/ImageUpload';
-import { Users, Save, ChevronDown, ChevronUp, Plus, Trash2, CheckCircle } from 'lucide-react';
+import { Users, Save, ChevronDown, ChevronUp, Plus, Trash2, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import '../../admin.css';
 
 const NetworkEdit = () => {
-  const { data, updateData } = useAdmin();
+  const { data, updateData } = useBackend();
   const [connections, setConnections] = useState([]);
   const [sectionData, setSectionData] = useState({
     sectionTitle: '', sectionSubtitle: '', centerLabel: '', centerSubLabel: '', centerAvatar: ''
   });
   const [expandedId, setExpandedId] = useState(null);
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
 
   useEffect(() => {
     if (data.networkData) {
@@ -39,11 +41,12 @@ const NetworkEdit = () => {
   };
   const removeConn = (id) => setConnections(connections.filter(c => c.id !== id));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    updateData('networkData', { ...data.networkData, ...sectionData, connections });
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    setSaving(true); setSaveError('');
+    const result = await updateData('networkData', { ...data.networkData, ...sectionData, connections });
+    setSaving(false);
+    if (result.success) { setSaved(true); setTimeout(() => setSaved(false), 3000); } else { setSaveError(result.error); }
   };
 
   return (
@@ -95,7 +98,7 @@ const NetworkEdit = () => {
                 </div>
                 <div className="a-accordion-info">
                   <h4>{conn.name || 'Untitled Connection'}</h4>
-                  <p>{conn.role || 'No role'} &bull; Angle {conn.angle}°</p>
+                  <p>{conn.role || 'No role'}</p>
                 </div>
                 <div className="a-accordion-actions">
                   <span
@@ -139,20 +142,23 @@ const NetworkEdit = () => {
                         <option value="globe">Globe</option>
                       </select>
                     </div>
-                    <ImageUpload label="Custom Icon (Override)" value={conn.customSkillIconUrl} onChange={v => updateConn(conn.id, 'customSkillIconUrl', v)} size="sm" />
-                  </div>
-
-                  <div className="a-field" style={{ marginTop: 16 }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
-                      <label className="a-label">Position Angle (0-360)</label>
-                      <span style={{ fontSize: 13, fontWeight: 700, color: '#f97316' }}>{conn.angle}°</span>
+                    <div className="a-field">
+                      <label className="a-label">Node Color</label>
+                      <select value={conn.ringColor || '#6366f1'} onChange={e => {
+                        setConnections(connections.map(c => c.id === conn.id ? { ...c, ringColor: e.target.value, skillColor: e.target.value } : c));
+                      }} className="a-select orange">
+                        <option value="#6366f1">Indigo</option>
+                        <option value="#3b82f6">Blue</option>
+                        <option value="#06b6d4">Cyan</option>
+                        <option value="#10b981">Green</option>
+                        <option value="#f59e0b">Amber</option>
+                        <option value="#f97316">Orange</option>
+                        <option value="#ef4444">Red</option>
+                        <option value="#8b5cf6">Violet</option>
+                        <option value="#d946ef">Fuchsia</option>
+                        <option value="#ec4899">Pink</option>
+                      </select>
                     </div>
-                    <input
-                      type="range" min="0" max="360"
-                      value={conn.angle || 0}
-                      onChange={e => updateConn(conn.id, 'angle', parseInt(e.target.value))}
-                      style={{ width: '100%', accentColor: '#f97316' }}
-                    />
                   </div>
                 </div>
               )}
@@ -170,13 +176,24 @@ const NetworkEdit = () => {
       </div>
 
       <div className="a-save-bar">
-        <button type="submit" className={`a-btn ${saved ? 'a-btn-success' : 'a-btn-orange'}`}>
-          {saved ? <><CheckCircle size={17} /> Saved!</> : <><Save size={17} /> Save Network</>}
+        <button type="submit" className={`a-btn ${saved ? 'a-btn-success' : 'a-btn-orange'}`} disabled={saving}>
+          {saving
+            ? <><Loader2 size={17} style={{ animation: 'spin 1s linear infinite' }} /> Saving...</>
+            : saved
+            ? <><CheckCircle size={17} /> Saved!</>
+            : <><Save size={17} /> Save Network</>}
         </button>
         {saved && <span className="a-save-success-msg"><CheckCircle size={14} /> Changes applied.</span>}
+        {saveError && (
+          <span style={{ color: '#ef4444', fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <AlertCircle size={14} />{saveError}
+          </span>
+        )}
       </div>
     </form>
   );
 };
 
 export default NetworkEdit;
+
+

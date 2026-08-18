@@ -1,37 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import { useBackend as useAdmin } from '../../hooks/useBackend';
+import { useBackend } from '../../hooks/useBackend';
 import ImageUpload from '../../components/ImageUpload';
-import { Briefcase, Save, ChevronDown, ChevronUp, Plus, Trash2, CheckCircle, Tag, Link2, BarChart3, ShieldCheck, Image as ImageIcon } from 'lucide-react';
+import { Briefcase, Save, ChevronDown, ChevronUp, Plus, Trash2, CheckCircle, Tag, Link2, BarChart3, ShieldCheck, Image as ImageIcon, AlertCircle, Loader2 } from 'lucide-react';
 import '../../admin.css';
 
 const ProjectsEdit = () => {
-  const { data, updateData } = useAdmin();
+  const { data, updateData } = useBackend();
   const [projects, setProjects] = useState([]);
   const [details, setDetails] = useState({});
-  const [sectionData, setSectionData] = useState({
-    sectionTitle: '', sectionSubtitle: '', viewAllUrl: ''
-  });
+  const [sectionData, setSectionData] = useState({ sectionTitle: '', sectionSubtitle: '', viewAllUrl: '' });
   const [expandedId, setExpandedId] = useState(null);
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
 
   useEffect(() => {
-    // Load from context
-    let apd = data.allProjectsData || data.projectsData?.featured || [];
-    
-    // Initialize featuredType based on badge if not set
+    // allProjectsData is the full array from GET /api/projects
+    let apd = data.allProjectsData || [];
+
     if (apd.length > 0) {
       apd = apd.map((p, i) => {
         if (p.featuredType) return p;
         if (p.badge === 'Current Project') return { ...p, featuredType: 'current' };
         if (p.badge === 'Top Rated') return { ...p, featuredType: 'top' };
-        // Fallback for initial load if no badges match
         if (!data.allProjectsData && i < 2) return { ...p, featuredType: i === 0 ? 'current' : 'top' };
         return { ...p, featuredType: 'none' };
       });
     }
-    
     setProjects(apd);
-    
+
+    // projectDetailsData is the map from GET /api/projects/details
     setDetails(data.projectDetailsData || {});
 
     if (data.projectsData) {
@@ -115,15 +113,23 @@ const ProjectsEdit = () => {
     updateProjectDetail(pid, 'screenshots', current);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    updateData('allProjectsData', projects);
-    updateData('projectDetailsData', details);
-    
-    const featuredProjects = projects.filter(p => p.featuredType === 'current' || p.featuredType === 'top');
-    updateData('projectsData', { ...data.projectsData, ...sectionData, featured: featuredProjects }); // keep only selected as featured
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    setSaving(true);
+    setSaveError('');
+    // 1. Save all projects array  → PUT /api/projects
+    const r1 = await updateData('allProjectsData', projects);
+    // 2. Save project details map → PUT /api/projects/details
+    const r2 = await updateData('projectDetailsData', details);
+    // 3. Save page-level section info → PUT /api/projects/page
+    const r3 = await updateData('projectsData', { ...data.projectsData, ...sectionData });
+    setSaving(false);
+    if (r1.success && r2.success && r3.success) {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } else {
+      setSaveError(r1.error || r2.error || r3.error || 'Save failed.');
+    }
   };
 
   return (

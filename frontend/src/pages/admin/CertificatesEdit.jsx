@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useBackend as useAdmin } from '../../hooks/useBackend';
+import { useBackend } from '../../hooks/useBackend';
 import ImageUpload from '../../components/ImageUpload';
-import { Award, Save, ChevronDown, ChevronUp, Plus, Trash2, CheckCircle, BarChart3 } from 'lucide-react';
+import { Award, Save, ChevronDown, ChevronUp, Plus, Trash2, CheckCircle, BarChart3, AlertCircle, Loader2 } from 'lucide-react';
 import '../../admin.css';
 
 const CertificatesEdit = () => {
-  const { data, updateData } = useAdmin();
+  const { data, updateData } = useBackend();
   const [entries, setEntries] = useState([]);
   const [stats, setStats] = useState([]);
   const [sectionData, setSectionData] = useState({
@@ -13,6 +13,8 @@ const CertificatesEdit = () => {
   });
   const [expandedId, setExpandedId] = useState(null);
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
 
   useEffect(() => {
     if (data.certificatesData) {
@@ -46,11 +48,18 @@ const CertificatesEdit = () => {
   };
   const removeStat = (index) => setStats(stats.filter((_, i) => i !== index));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    updateData('certificatesData', { ...data.certificatesData, ...sectionData, stats, entries });
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    setSaving(true);
+    setSaveError('');
+    const result = await updateData('certificatesData', { ...data.certificatesData, ...sectionData, stats, entries });
+    setSaving(false);
+    if (result.success) {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } else {
+      setSaveError(result.error);
+    }
   };
 
   return (
@@ -183,3 +192,4 @@ const CertificatesEdit = () => {
 };
 
 export default CertificatesEdit;
+

@@ -1,14 +1,22 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Search, Rocket, ArrowRight, ChevronDown } from 'lucide-react';
 import { useBackend as useAdmin } from '../hooks/useBackend';
 import './AllSkills.css';
 
 export default function AllSkills() {
-  const { data: { allSkillsCategories, allSkillsDetailed } } = useAdmin();
-  const [activeCategory, setActiveCategory] = useState(allSkillsCategories[0].id);
+  const { data } = useAdmin();
+  const allSkillsCategories = data?.allSkillsCategories || [];
+  const allSkillsDetailed = data?.allSkillsDetailed || {};
+  const [activeCategory, setActiveCategory] = useState(allSkillsCategories[0]?.id || '');
   const [searchQuery, setSearchQuery] = useState('');
   const [showAllMobileCategories, setShowAllMobileCategories] = useState(false);
+
+  useEffect(() => {
+    if (!activeCategory && allSkillsCategories.length > 0) {
+      setActiveCategory(allSkillsCategories[0].id);
+    }
+  }, [allSkillsCategories, activeCategory]);
 
   // Filter categories by search
   const filteredCategories = searchQuery
@@ -84,6 +92,13 @@ export default function AllSkills() {
 
         {/* Right Content */}
         <div className="skills-content-area">
+          {/* No data guard */}
+          {!activeData ? (
+            <div style={{ padding: '48px 24px', textAlign: 'center', color: '#94a3b8' }}>
+              <p style={{ fontSize: 15 }}>Select a category to view skills.</p>
+            </div>
+          ) : (
+          <>
           {/* Header Card */}
           <div className="skill-detail-header-card">
             <div className="header-card-top">
@@ -178,8 +193,12 @@ export default function AllSkills() {
               Explore My Projects <ArrowRight size={16} />
             </Link>
           </div>
+          </>
+          )}
         </div>
       </div>
     </div>
   );
 }
+
+

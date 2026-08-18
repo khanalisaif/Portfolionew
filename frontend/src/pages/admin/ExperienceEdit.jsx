@@ -1,16 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { useBackend as useAdmin } from '../../hooks/useBackend';
-import { Briefcase, Save, ChevronDown, ChevronUp, Plus, Trash2, CheckCircle } from 'lucide-react';
+import { useBackend } from '../../hooks/useBackend';
+import { Briefcase, Save, ChevronDown, ChevronUp, Plus, Trash2, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import '../../admin.css';
 
 const ExperienceEdit = () => {
-  const { data, updateData } = useAdmin();
+  const { data, updateData } = useBackend();
   const [entries, setEntries] = useState([]);
   const [sectionData, setSectionData] = useState({
     sectionTitle: '', sectionSubtitle: ''
   });
   const [expandedId, setExpandedId] = useState(null);
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
 
   useEffect(() => {
     if (data.experienceData) {
@@ -35,11 +37,18 @@ const ExperienceEdit = () => {
   
   const removeEntry = (id) => setEntries(entries.filter(e => e.id !== id));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    updateData('experienceData', { ...data.experienceData, ...sectionData, entries });
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    setSaving(true);
+    setSaveError('');
+    const result = await updateData('experienceData', { ...data.experienceData, ...sectionData, entries });
+    setSaving(false);
+    if (result.success) {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } else {
+      setSaveError(result.error);
+    }
   };
 
   return (
@@ -141,13 +150,23 @@ const ExperienceEdit = () => {
       </div>
 
       <div className="a-save-bar">
-        <button type="submit" className={`a-btn ${saved ? 'a-btn-success' : 'a-btn-purple'}`}>
-          {saved ? <><CheckCircle size={17} /> Saved!</> : <><Save size={17} /> Save Experience</>}
+        <button type="submit" className={`a-btn ${saved ? 'a-btn-success' : 'a-btn-purple'}`} disabled={saving}>
+          {saving
+            ? <><Loader2 size={17} style={{ animation: 'spin 1s linear infinite' }} /> Saving...</>
+            : saved
+            ? <><CheckCircle size={17} /> Saved!</>
+            : <><Save size={17} /> Save Experience</>}
         </button>
         {saved && <span className="a-save-success-msg"><CheckCircle size={14} /> Changes applied.</span>}
+        {saveError && (
+          <span style={{ color: '#ef4444', fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <AlertCircle size={14} />{saveError}
+          </span>
+        )}
       </div>
     </form>
   );
 };
 
 export default ExperienceEdit;
+

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { useBackend as useAdmin } from '../../hooks/useBackend';
-import { Info, Save, Plus, Trash2, CheckCircle, BarChart, Heart, Code2 } from 'lucide-react';
+import { useBackend } from '../../hooks/useBackend';
+import { Info, Save, Plus, Trash2, CheckCircle, BarChart, Heart, Code2, AlertCircle, Loader2 } from 'lucide-react';
 import ImageUpload from '../../components/ImageUpload';
 import '../../admin.css';
 
 const AboutEdit = () => {
-  const { data, updateData } = useAdmin();
+  const { data, updateData } = useBackend();
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
   const [form, setForm] = useState({
     careerObjective: '',
     quote: '',
@@ -16,16 +18,19 @@ const AboutEdit = () => {
   });
 
   useEffect(() => {
-    if (data.aboutPageData) {
+    const about = data.aboutData || data.aboutPageData;
+    if (about) {
       setForm({
-        careerObjective: data.aboutPageData.careerObjective || '',
-        quote: data.aboutPageData.quote || '',
-        stats: data.aboutPageData.stats || [],
-        coreValues: data.aboutPageData.coreValues || [],
-        whatIWorkOn: data.aboutPageData.whatIWorkOn || []
+        careerObjective: about.careerObjective || '',
+        quote: about.quote || '',
+        techStack: about.techStack || '',
+        descriptions: about.descriptions || [],
+        stats: about.stats || [],
+        coreValues: about.coreValues || [],
+        whatIWorkOn: about.whatIWorkOn || []
       });
     }
-  }, [data.aboutPageData]);
+  }, [data.aboutData, data.aboutPageData]);
 
   const set = (f, v) => setForm(p => ({ ...p, [f]: v }));
 
@@ -42,11 +47,19 @@ const AboutEdit = () => {
     set(key, form[key].filter((_, i) => i !== idx));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    updateData('aboutPageData', { ...data.aboutPageData, ...form });
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    setSaving(true);
+    setSaveError('');
+    const currentAbout = data.aboutData || data.aboutPageData || {};
+    const result = await updateData('aboutData', { ...currentAbout, ...form });
+    setSaving(false);
+    if (result.success) {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } else {
+      setSaveError(result.error);
+    }
   };
 
   return (
@@ -61,6 +74,26 @@ const AboutEdit = () => {
           </div>
         </div>
         <div className="a-card-body" style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+          <div>
+            <label className="a-label">Tech Stack Highlight</label>
+            <input
+              className="a-input"
+              value={form.techStack || ''}
+              onChange={(e) => set('techStack', e.target.value)}
+              placeholder="Java • Kotlin • Swift • UIKit"
+            />
+          </div>
+          <div>
+            <label className="a-label">About Me Paragraphs</label>
+            <p className="a-hint">Each new line represents a new paragraph.</p>
+            <textarea
+              className="a-input"
+              rows={5}
+              value={form.descriptions ? form.descriptions.join('\n') : ''}
+              onChange={(e) => set('descriptions', e.target.value.split('\n'))}
+              placeholder="I am a developer with over 3 years of experience..."
+            />
+          </div>
           <div>
             <label className="a-label">Career Objective</label>
             <textarea
@@ -208,10 +241,16 @@ const AboutEdit = () => {
             <span>Changes saved successfully!</span>
           </div>
         )}
+        {saveError && (
+          <span style={{ color: '#ef4444', fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}>
+            <AlertCircle size={14} />{saveError}
+          </span>
+        )}
         <div style={{ flex: 1 }}></div>
-        <button type="submit" className="a-btn-primary" style={{ padding: '10px 24px', fontSize: 15 }}>
-          <Save size={18} />
-          Save Changes
+        <button type="submit" className="a-btn-primary" disabled={saving} style={{ padding: '10px 24px', fontSize: 15 }}>
+          {saving
+            ? <><Loader2 size={17} style={{ animation: 'spin 1s linear infinite' }} /> Saving...</>
+            : <><Save size={18} /> Save Changes</>}
         </button>
       </div>
     </form>

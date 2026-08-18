@@ -259,3 +259,4 @@ const EducationEdit = () => {
 };
 
 export default EducationEdit;
+

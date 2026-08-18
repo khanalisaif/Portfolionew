@@ -1,13 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { useBackend as useAdmin } from '../../hooks/useBackend';
+import { useBackend } from '../../hooks/useBackend';
 import ImageUpload from '../../components/ImageUpload';
 import FileUpload from '../../components/FileUpload';
-import { User, Save, Plus, Trash2, CheckCircle, Sparkles } from 'lucide-react';
+import { User, Save, Plus, Trash2, CheckCircle, Sparkles, AlertCircle, Loader2 } from 'lucide-react';
 import '../../admin.css';
 
 const ProfileEdit = () => {
-  const { data, updateData } = useAdmin();
+  const { data, updateData } = useBackend();
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
   const [form, setForm] = useState({
     name: '', nameParts: { first: '', last: '' }, titles: [],
     tagline: '', resumeUrl: '', hireEmail: '', avatarUrl: '',
@@ -35,11 +37,18 @@ const ProfileEdit = () => {
   const updateTitle = (i, v) => { const t = [...form.titles]; t[i] = v; set('titles', t); };
   const removeTitle = (i) => set('titles', form.titles.filter((_, idx) => idx !== i));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    updateData('profileData', { ...data.profileData, ...form });
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    setSaving(true);
+    setSaveError('');
+    const result = await updateData('profileData', { ...data.profileData, ...form });
+    setSaving(false);
+    if (result.success) {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } else {
+      setSaveError(result.error);
+    }
   };
 
   return (
@@ -168,10 +177,11 @@ const ProfileEdit = () => {
 
       {/* Save */}
       <div className="a-save-bar">
-        <button type="submit" className={`a-btn ${saved ? 'a-btn-success' : 'a-btn-primary'}`}>
-          {saved ? <><CheckCircle size={17} /> Saved!</> : <><Save size={17} /> Save Profile</>}
+        <button type="submit" className={`a-btn ${saved ? 'a-btn-success' : 'a-btn-primary'}`} disabled={saving}>
+          {saving ? <><Loader2 size={17} style={{ animation: 'spin 1s linear infinite' }} /> Saving...</> : saved ? <><CheckCircle size={17} /> Saved!</> : <><Save size={17} /> Save Profile</>}
         </button>
         {saved && <span className="a-save-success-msg"><CheckCircle size={14} /> Changes applied to the live site.</span>}
+        {saveError && <span style={{ color: '#ef4444', fontSize: 13, display: 'flex', alignItems: 'center', gap: 6 }}><AlertCircle size={14} />{saveError}</span>}
       </div>
     </form>
   );

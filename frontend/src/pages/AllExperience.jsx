@@ -9,7 +9,7 @@ export default function AllExperience() {
   const experienceData = data?.experienceData;
   const profileData = data?.profileData;
 
-  if (!experienceData) return null;
+  if (!experienceData || !profileData) return null;
 
   return (
     <div className="all-education-page">
@@ -63,3 +63,4 @@ export default function AllExperience() {
     </div>
   );
 }
+

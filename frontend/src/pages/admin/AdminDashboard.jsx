@@ -1,43 +1,58 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { useBackend as useAdmin } from '../../hooks/useBackend';
+import { useBackend } from '../../hooks/useBackend';
 import '../../admin.css';
 import {
   LayoutDashboard, LogOut, User, Navigation, BookOpen, Wrench, Briefcase, Network, Database,
-  ChevronRight, RefreshCw, Menu, X, Info, Award, GraduationCap
+  ChevronRight, Menu, X, Info, Award, GraduationCap, Loader2
 } from 'lucide-react';
 
 const navItems = [
-  { name: 'Dashboard', path: '/page/admin', exact: true, icon: LayoutDashboard, colorClass: 'indigo' },
-  { name: 'Profile', path: '/page/admin/profile', icon: User, colorClass: 'blue' },
-  { name: 'About Page', path: '/page/admin/about', icon: Info, colorClass: 'indigo' },
-  { name: 'Orbit Cards', path: '/page/admin/orbit', icon: Navigation, colorClass: 'violet' },
-  { name: 'Skills', path: '/page/admin/skills', icon: Wrench, colorClass: 'cyan' },
-  { name: 'All Skills', path: '/page/admin/all-skills', icon: Database, colorClass: 'slate' },
-  { name: 'Projects', path: '/page/admin/projects', icon: Briefcase, colorClass: 'green' },
-  { name: 'Network', path: '/page/admin/network', icon: Network, colorClass: 'pink' },
-  { name: 'Experience', path: '/page/admin/experience', icon: Briefcase, colorClass: 'purple' },
-  { name: 'Certificates', path: '/page/admin/certificates', icon: Award, colorClass: 'yellow' },
-  { name: 'All Education', path: '/page/admin/all-education', icon: GraduationCap, colorClass: 'blue' },
+  { name: 'Dashboard',     path: '/page/admin',              exact: true, icon: LayoutDashboard, colorClass: 'indigo' },
+  { name: 'Profile',       path: '/page/admin/profile',       icon: User,           colorClass: 'blue' },
+  { name: 'About Page',    path: '/page/admin/about',         icon: Info,           colorClass: 'indigo' },
+  { name: 'Orbit Cards',   path: '/page/admin/orbit',         icon: Navigation,     colorClass: 'violet' },
+  { name: 'Skills',        path: '/page/admin/skills',        icon: Wrench,         colorClass: 'cyan' },
+  { name: 'All Skills',    path: '/page/admin/all-skills',    icon: Database,       colorClass: 'slate' },
+  { name: 'Projects',      path: '/page/admin/projects',      icon: Briefcase,      colorClass: 'green' },
+  { name: 'Network',       path: '/page/admin/network',       icon: Network,        colorClass: 'pink' },
+  { name: 'Experience',    path: '/page/admin/experience',    icon: Briefcase,      colorClass: 'purple' },
+  { name: 'Certificates',  path: '/page/admin/certificates',  icon: Award,          colorClass: 'yellow' },
+  { name: 'All Education', path: '/page/admin/all-education', icon: GraduationCap,  colorClass: 'blue' },
 ];
 
 const AdminDashboard = () => {
-  const { isAuthenticated, logout, resetToDefault } = useAdmin();
+  const { isAuthenticated, authLoading, logout } = useBackend();
   const navigate = useNavigate();
   const location = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated) navigate('/page/admin/login');
-  }, [isAuthenticated, navigate]);
+    if (!authLoading && !isAuthenticated) {
+      if (location.pathname !== '/page/admin/login' && location.pathname !== '/page/admin/otp') {
+        navigate('/page/admin/login');
+      }
+    }
+  }, [isAuthenticated, authLoading, navigate, location.pathname]);
 
   useEffect(() => {
     setSidebarOpen(false);
   }, [location.pathname]);
 
+  if (authLoading) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f8fafc' }}>
+        <Loader2 size={32} style={{ animation: 'spin 1s linear infinite', color: '#6366f1' }} />
+      </div>
+    );
+  }
+
   if (!isAuthenticated) return null;
 
-  const handleLogout = () => { logout(); navigate('/page/admin/login'); };
+  const handleLogout = () => {
+    logout();
+    navigate('/page/admin/login');
+  };
 
   const activeItem = navItems.find(item =>
     item.exact ? location.pathname === item.path : location.pathname.startsWith(item.path) && !item.exact
@@ -117,7 +132,7 @@ const AdminDashboard = () => {
         <div className="admin-main">
           {/* Topbar */}
           <header className="admin-topbar">
-            <button className="admin-hamburger" onClick={() => setSidebarOpen(true)} style={{ display: 'flex' }}>
+            <button className="admin-hamburger" onClick={() => setSidebarOpen(true)}>
               <Menu size={17} />
             </button>
 

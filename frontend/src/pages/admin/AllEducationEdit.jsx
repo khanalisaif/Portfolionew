@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { useBackend as useAdmin } from '../../hooks/useBackend';
+import { useBackend } from '../../hooks/useBackend';
 import ImageUpload from '../../components/ImageUpload';
-import { GraduationCap, Save, ChevronDown, ChevronUp, Plus, Trash2, CheckCircle, BarChart3, Sparkles, Pin } from 'lucide-react';
+import { GraduationCap, Save, ChevronDown, ChevronUp, Plus, Trash2, CheckCircle, BarChart3, Sparkles, Pin, AlertCircle, Loader2 } from 'lucide-react';
 import '../../admin.css';
 
 const AllEducationEdit = () => {
-  const { data, updateData } = useAdmin();
+  const { data, updateData } = useBackend();
   const [entries, setEntries] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
   const [saved, setSaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState('');
 
   useEffect(() => {
     // Load allEducationData. Also determine which ones are pinned by checking if their ID exists in educationData.entries.
@@ -56,17 +58,22 @@ const AllEducationEdit = () => {
   // Achievements
   const updateAchievements = (id, text) => updateEntry(id, 'keyAchievements', text.split('\n').map(a => a.trim()).filter(Boolean));
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Save to allEducationData
-    updateData('allEducationData', entries);
-    
-    // Save pinned entries to educationData.entries
+    setSaving(true);
+    setSaveError('');
+    // Save full education list array → PUT /api/education/all
+    const r1 = await updateData('allEducationData', entries);
+    // Save pinned entries to the hero section → PUT /api/education
     const pinnedEntries = entries.filter(e => e.isPinned);
-    updateData('educationData', { ...data.educationData, entries: pinnedEntries });
-    
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    const r2 = await updateData('educationData', { ...data.educationData, entries: pinnedEntries });
+    setSaving(false);
+    if (r1.success && r2.success) {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } else {
+      setSaveError(r1.error || r2.error || 'Save failed.');
+    }
   };
 
   return (
@@ -230,3 +237,4 @@ const AllEducationEdit = () => {
 };
 
 export default AllEducationEdit;
+

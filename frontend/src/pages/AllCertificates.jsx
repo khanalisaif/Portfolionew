@@ -50,7 +50,11 @@ export default function AllCertificates() {
         <div className="cert-grid">
           {certData.entries.map((cert) => (
             <div key={cert.id} className="cert-card">
-              <img src="https://placehold.co/600x400/e2e8f0/64748b?text=Certificate" alt={cert.title} className="cert-card-img" />
+              <img
+                src={cert.image || 'https://placehold.co/600x400/e2e8f0/64748b?text=Certificate'}
+                alt={cert.title}
+                className="cert-card-img"
+              />
               <div className="cert-card-body">
                 <div className="cert-card-meta">
                   <div className="cert-card-issuer">
@@ -74,3 +78,4 @@ export default function AllCertificates() {
     </div>
   );
 }
+

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Code2, ChevronRight, ChevronDown, Lightbulb, Wrench } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { getSkills } from '../services/api';
+import { useBackend } from '../hooks/useBackend';
 import { useFadeUp } from '../hooks/useFadeUp';
 
 // Simple donut chart using SVG
@@ -54,22 +54,9 @@ const GRADIENTS = [
 export default function SkillsSection() {
   const ref = useFadeUp();
   const [showAll, setShowAll] = useState(false);
-  const [skillsData, setSkillsData] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await getSkills();
-        setSkillsData(res.data);
-      } catch (err) {
-        console.error("Error fetching skills data:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, []);
+  const { data, loading: contextLoading } = useBackend();
+  const skillsData = data?.skillsData;
+  const loading = contextLoading || !skillsData;
 
   if (loading || !skillsData) return null;
 
