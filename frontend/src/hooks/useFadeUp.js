@@ -1,25 +1,32 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 
 export function useFadeUp() {
-  const ref = useRef(null);
+  const observerRef = useRef(null);
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          el.classList.add('visible');
-          observer.unobserve(el);
-        }
-      },
-      { threshold: 0.1 }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
+  const setRef = useCallback((node) => {
+    if (node) {
+      if (!observerRef.current) {
+        observerRef.current = new IntersectionObserver(
+          ([entry]) => {
+            if (entry.isIntersecting) {
+              node.classList.add('visible');
+              observerRef.current.unobserve(node);
+            }
+          },
+          { threshold: 0.1 }
+        );
+      }
+      observerRef.current.observe(node);
+    }
   }, []);
 
-  return ref;
+  useEffect(() => {
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, []);
+
+  return setRef;
 }

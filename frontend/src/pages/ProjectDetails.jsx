@@ -130,10 +130,11 @@ export default function ProjectDetails() {
           <div className="pd-meta-table">
             {project.metaTable.map(meta => {
               const MetaIcon = iconMap[meta.icon] || CheckCircle;
+              const isUrl = meta.icon && (meta.icon.startsWith('http') || meta.icon.startsWith('data:'));
               return (
                 <div className="pd-meta-row" key={meta.label}>
                   <div className="pd-meta-label">
-                    <MetaIcon size={14} /> {meta.label}
+                    {isUrl ? <img src={meta.icon} alt="" style={{width: 14, height: 14, objectFit: 'contain'}} /> : <MetaIcon size={14} />} {meta.label}
                   </div>
                   <div className="pd-meta-value">{meta.value}</div>
                 </div>
@@ -151,10 +152,11 @@ export default function ProjectDetails() {
       <div className="pd-highlights-grid">
         {project.highlights.map((hl, i) => {
           const HlIcon = iconMap[hl.icon] || CheckCircle2;
+          const isUrl = hl.icon && (hl.icon.startsWith('http') || hl.icon.startsWith('data:'));
           return (
             <div className="pd-highlight-card" key={i}>
               <div className="pd-hl-icon-wrapper">
-                <HlIcon size={20} />
+                {isUrl ? <img src={hl.icon} alt="" style={{width: 20, height: 20, objectFit: 'contain'}} /> : <HlIcon size={20} />}
               </div>
               <div>
                 <h4 className="pd-hl-title">{hl.title}</h4>

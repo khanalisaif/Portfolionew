@@ -4,7 +4,7 @@ import { useBackend } from '../../hooks/useBackend';
 import '../../admin.css';
 import {
   LayoutDashboard, LogOut, User, Navigation, BookOpen, Wrench, Briefcase, Network, Database,
-  ChevronRight, Menu, X, Info, Award, GraduationCap, Loader2
+  ChevronRight, Menu, X, Info, Award, GraduationCap, Loader2, Link2
 } from 'lucide-react';
 
 const navItems = [
@@ -19,6 +19,7 @@ const navItems = [
   { name: 'Experience',    path: '/page/admin/experience',    icon: Briefcase,      colorClass: 'purple' },
   { name: 'Certificates',  path: '/page/admin/certificates',  icon: Award,          colorClass: 'yellow' },
   { name: 'All Education', path: '/page/admin/all-education', icon: GraduationCap,  colorClass: 'blue' },
+  { name: 'Route Links',   path: '/page/admin/route-guide',   icon: Link2,          colorClass: 'green' },
 ];
 
 const AdminDashboard = () => {

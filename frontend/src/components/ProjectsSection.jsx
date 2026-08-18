@@ -28,7 +28,13 @@ export default function ProjectsSection() {
 
   const sectionTitle = pageInfo?.sectionTitle || 'Featured Projects';
   const sectionSubtitle = pageInfo?.sectionSubtitle || 'Some of my best work';
-  const featured = allProjects?.filter(p => p.isFeatured) || [];
+  const featured = (allProjects?.filter(p => p.isFeatured) || []).sort((a, b) => {
+    if (a.featuredType === 'current' && b.featuredType !== 'current') return -1;
+    if (a.featuredType !== 'current' && b.featuredType === 'current') return 1;
+    if (a.featuredType === 'top' && b.featuredType !== 'top') return -1;
+    if (a.featuredType !== 'top' && b.featuredType === 'top') return 1;
+    return 0;
+  });
 
   return (
     <section id="projects" className="section-container" style={{ paddingTop: 0 }}>

@@ -1,8 +1,67 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useBackend } from '../../hooks/useBackend';
 import ImageUpload from '../../components/ImageUpload';
 import { Code2, Save, Plus, Trash2, CheckCircle, ChevronDown, ChevronUp, Layers, PenTool, LayoutDashboard, BarChart3, AlertCircle, Loader2 } from 'lucide-react';
 import '../../admin.css';
+
+/* ── Hex color swatches for Levels (used directly in DonutChart SVG) ── */
+const HEX_COLORS = [
+  '#6366f1','#8b5cf6','#ec4899','#ef4444','#f97316',
+  '#f59e0b','#eab308','#22c55e','#10b981','#14b8a6',
+  '#06b6d4','#0ea5e9','#3b82f6','#64748b','#a855f7',
+  '#e11d48','#0891b2',
+];
+
+function LevelColorPicker({ value, onChange }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef(null);
+  useEffect(() => {
+    const fn = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    document.addEventListener('mousedown', fn);
+    return () => document.removeEventListener('mousedown', fn);
+  }, []);
+  return (
+    <div style={{ position: 'relative', flexShrink: 0 }} ref={ref}>
+      <div
+        onClick={() => setOpen(o => !o)}
+        title="Pick color"
+        style={{
+          width: 34, height: 34, borderRadius: 8,
+          background: value || '#6366f1',
+          border: '2px solid #e2e8f0',
+          cursor: 'pointer',
+          boxShadow: open ? '0 0 0 3px rgba(99,102,241,0.25)' : 'none',
+          transition: 'box-shadow 0.15s',
+        }}
+      />
+      {open && (
+        <div style={{
+          position: 'absolute', top: 40, left: 0,
+          background: 'white', border: '1px solid #e2e8f0',
+          borderRadius: 12, padding: 8, zIndex: 100,
+          boxShadow: '0 10px 25px -5px rgba(0,0,0,0.12)',
+          display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', gap: 5,
+          width: 160,
+        }}>
+          {HEX_COLORS.map(hex => (
+            <div
+              key={hex}
+              onClick={() => { onChange(hex); setOpen(false); }}
+              style={{
+                width: 20, height: 20, borderRadius: 5,
+                background: hex, cursor: 'pointer',
+                border: value === hex ? '2px solid #1e293b' : '2px solid transparent',
+                transition: 'transform 0.1s',
+              }}
+              onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.2)'}
+              onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 const SkillsEdit = () => {
   const { data, updateData } = useBackend();
@@ -43,7 +102,7 @@ const SkillsEdit = () => {
   const updateSection = (f, v) => setSectionData(p => ({ ...p, [f]: v }));
 
   const updateOverview = (f, v) => setSkillsOverview(p => ({ ...p, [f]: v }));
-  const addLevel = () => setSkillsOverview(p => ({ ...p, levels: [...(p.levels || []), { name: '', count: 0, color: '#000' }] }));
+  const addLevel = () => setSkillsOverview(p => ({ ...p, levels: [...(p.levels || []), { name: '', count: 0, color: '#6366f1' }] }));
   const updateLevel = (i, f, v) => {
     const nl = [...(skillsOverview.levels || [])];
     nl[i] = { ...nl[i], [f]: v };
@@ -227,7 +286,8 @@ const SkillsEdit = () => {
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 8, marginTop: 8 }}>
                 {(skillsOverview.levels || []).map((lvl, i) => (
-                  <div key={i} className="a-row" style={{ display: 'grid', gridTemplateColumns: '1fr 100px 100px auto', gap: 10 }}>
+                  <div key={i} className="a-row" style={{ display: 'grid', gridTemplateColumns: 'auto 1fr 90px auto', gap: 10, alignItems: 'center' }}>
+                    <LevelColorPicker value={lvl.color} onChange={v => updateLevel(i, 'color', v)} />
                     <input type="text" value={lvl.name} onChange={e => updateLevel(i, 'name', e.target.value)} className="a-input red" placeholder="Expert" />
                     <input type="number" value={lvl.count} onChange={e => updateLevel(i, 'count', parseInt(e.target.value) || 0)} className="a-input red" placeholder="6" />
                     <button type="button" onClick={() => removeLevel(i)} className="a-btn-icon danger"><Trash2 size={13} /></button>

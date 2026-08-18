@@ -56,7 +56,20 @@ const AllEducationEdit = () => {
   const removeStat = (eid, sid) => updateEntry(eid, 'stats', (entries.find(e => e.id === eid)?.stats || []).filter((_, i) => i !== sid));
 
   // Achievements
-  const updateAchievements = (id, text) => updateEntry(id, 'keyAchievements', text.split('\n').map(a => a.trim()).filter(Boolean));
+  const addAchievement = (eid) => {
+    const e = entries.find(x => x.id === eid);
+    updateEntry(eid, 'keyAchievements', [...(e.keyAchievements || []), '']);
+  };
+  const updateAchievement = (eid, idx, val) => {
+    const e = entries.find(x => x.id === eid);
+    const arr = [...(e.keyAchievements || [])];
+    arr[idx] = val;
+    updateEntry(eid, 'keyAchievements', arr);
+  };
+  const removeAchievement = (eid, idx) => {
+    const e = entries.find(x => x.id === eid);
+    updateEntry(eid, 'keyAchievements', (e.keyAchievements || []).filter((_, i) => i !== idx));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -200,15 +213,41 @@ const AllEducationEdit = () => {
 
                   {/* Achievements */}
                   <div className="a-field" style={{ marginTop: 8 }}>
-                    <div className="a-section-divider"><h3 style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Sparkles size={13} /> Key Achievements</h3></div>
-                    <p className="a-hint">One achievement per line</p>
-                    <textarea
-                      value={(entry.keyAchievements || []).join('\n')}
-                      onChange={e => updateAchievements(entry.id, e.target.value)}
-                      rows="3"
-                      className="a-textarea blue"
-                      placeholder="Graduated with honors&#10;Lead of robotics club"
-                    />
+                    <div className="a-section-divider">
+                      <h3 style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Sparkles size={13} /> Key Achievements</h3>
+                      <button type="button" onClick={() => addAchievement(entry.id)} className="a-btn a-btn-xs" style={{ background: '#e0f2fe', color: '#0284c7', borderColor: '#bae6fd' }}>
+                        <Plus size={11} /> Add Achievement
+                      </button>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      {(entry.keyAchievements || []).length === 0 && (
+                        <div style={{ fontSize: 12.5, color: '#94a3b8', padding: '10px 12px', background: '#f8fafc', borderRadius: 8, border: '1px dashed #e2e8f0', textAlign: 'center' }}>
+                          No achievements yet — click «Add Achievement» to start
+                        </div>
+                      )}
+                      {(entry.keyAchievements || []).map((ach, idx) => (
+                        <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <span style={{ fontSize: 11, color: '#94a3b8', fontWeight: 700, minWidth: 18, textAlign: 'right' }}>{idx + 1}.</span>
+                          <input
+                            type="text"
+                            value={ach}
+                            onChange={e => updateAchievement(entry.id, idx, e.target.value)}
+                            className="a-input blue"
+                            style={{ flex: 1, padding: '7px 10px', fontSize: 13 }}
+                            placeholder={`Achievement ${idx + 1}`}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeAchievement(entry.id, idx)}
+                            className="a-btn-icon danger"
+                            style={{ width: 28, height: 28, flexShrink: 0 }}
+                            title="Remove achievement"
+                          >
+                            <Trash2 size={13} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                   
                 </div>

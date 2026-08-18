@@ -42,7 +42,21 @@ const OrbitEdit = () => {
   useEffect(() => { if (data.orbitCards) setCards(data.orbitCards); }, [data.orbitCards]);
 
   const handleChange = (id, field, value) => setCards(cards.map(c => c.id === id ? { ...c, [field]: value } : c));
-  const handleItemsChange = (id, value) => handleChange(id, 'items', value.split('\n').map(i => i.trim()).filter(Boolean));
+
+  const addItem = (cardId) => {
+    const card = cards.find(c => c.id === cardId);
+    handleChange(cardId, 'items', [...(card?.items || []), '']);
+  };
+  const updateItem = (cardId, idx, value) => {
+    const card = cards.find(c => c.id === cardId);
+    const items = [...(card?.items || [])];
+    items[idx] = value;
+    handleChange(cardId, 'items', items);
+  };
+  const removeItem = (cardId, idx) => {
+    const card = cards.find(c => c.id === cardId);
+    handleChange(cardId, 'items', (card?.items || []).filter((_, i) => i !== idx));
+  };
 
   const addCard = () => {
     const newCard = {
@@ -172,15 +186,47 @@ const OrbitEdit = () => {
 
 
                 <div className="a-field">
-                  <label className="a-label">List Items</label>
-                  <p className="a-hint">One item per line — shown when the card is expanded</p>
-                  <textarea
-                    value={card.items?.join('\n') || ''}
-                    onChange={e => handleItemsChange(card.id, e.target.value)}
-                    rows="4"
-                    className="a-textarea"
-                    placeholder={"Google Certified\nMeta Certified\nUdemy Certificates"}
-                  />
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                    <label className="a-label" style={{ marginBottom: 0 }}>List Items</label>
+                    <button
+                      type="button"
+                      onClick={() => addItem(card.id)}
+                      className="a-btn a-btn-xs a-btn-ghost-indigo"
+                      style={{ display: 'flex', alignItems: 'center', gap: 4 }}
+                    >
+                      <Plus size={12} /> Add Item
+                    </button>
+                  </div>
+                  <p className="a-hint" style={{ marginBottom: 8 }}>Shown when the card is expanded</p>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    {(card.items || []).length === 0 && (
+                      <div style={{ fontSize: 12.5, color: '#94a3b8', padding: '10px 12px', background: '#f8fafc', borderRadius: 8, border: '1px dashed #e2e8f0', textAlign: 'center' }}>
+                        No items yet — click «Add Item» to start
+                      </div>
+                    )}
+                    {(card.items || []).map((item, idx) => (
+                      <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                        <span style={{ fontSize: 11, color: '#94a3b8', fontWeight: 700, minWidth: 18, textAlign: 'right' }}>{idx + 1}.</span>
+                        <input
+                          type="text"
+                          value={item}
+                          onChange={e => updateItem(card.id, idx, e.target.value)}
+                          className="a-input"
+                          style={{ flex: 1, padding: '7px 10px', fontSize: 13 }}
+                          placeholder={`Item ${idx + 1}`}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeItem(card.id, idx)}
+                          className="a-btn-icon"
+                          style={{ width: 28, height: 28, flexShrink: 0 }}
+                          title="Remove item"
+                        >
+                          <Trash2 size={13} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 <div className="a-grid-2">

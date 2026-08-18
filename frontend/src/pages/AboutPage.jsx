@@ -8,6 +8,7 @@ import {
   Flame, UploadCloud, TrendingUp, Feather, Target
 } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { TAILWIND_COLORS } from '../components/ColorPicker';
 import './AboutPage.css';
 
 const AndroidIcon = ({ size = 20, style }) => (
@@ -489,8 +490,8 @@ export default function AboutPage() {
         <h2 className="ap-section-title">Core Values</h2>
         <div className="ap-cv-grid">
           {aboutPageData.coreValues.map((cv, i) => {
-            const textKey = cv.color.split(' ').find(c => c.startsWith('text-')) || 'text-blue-600';
-            const pal = CV_COLORS[textKey] || { text: '#4f46e5', bg: '#eef2ff' };
+            const match = TAILWIND_COLORS.find(c => c.classes === cv.color || cv.color?.includes(c.name.toLowerCase())) || TAILWIND_COLORS[10];
+            const pal = { text: match.hex, bg: match.bgHex };
             return (
               <div key={i} className="ap-cv-card">
                 <div className="ap-cv-icon" style={{ background: pal.bg, color: pal.text }}>
@@ -507,8 +508,8 @@ export default function AboutPage() {
         <h2 className="ap-section-title">What I Work On</h2>
         <div className="ap-wiwo-grid">
           {aboutPageData.whatIWorkOn.map((item, i) => {
-            const textKey = item.color.split(' ').find(c => c.startsWith('text-')) || 'text-blue-500';
-            const pal = WIWO_COLORS[textKey] || { text: '#3b82f6', bg: '#eff6ff' };
+            const match = TAILWIND_COLORS.find(c => c.classes === item.color || item.color?.includes(c.name.toLowerCase())) || TAILWIND_COLORS[10];
+            const pal = { text: match.hex, bg: match.bgHex };
             return (
               <div key={i} className="ap-wiwo-card">
                 <div className="ap-wiwo-icon" style={{ background: pal.bg, color: pal.text }}>

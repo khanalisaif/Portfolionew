@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useBackend } from '../../hooks/useBackend';
 import { Info, Save, Plus, Trash2, CheckCircle, BarChart, Heart, Code2, AlertCircle, Loader2 } from 'lucide-react';
 import ImageUpload from '../../components/ImageUpload';
+import ColorPicker from '../../components/ColorPicker';
 import '../../admin.css';
 
 const AboutEdit = () => {
@@ -185,10 +186,7 @@ const AboutEdit = () => {
                       <input className="a-input" value={cv.icon} onChange={e => updateArrayItem('coreValues', i, 'icon', e.target.value)} />
                     </div>
                     <ImageUpload label="Custom Icon (Override)" value={cv.customIconUrl} onChange={v => updateArrayItem('coreValues', i, 'customIconUrl', v)} size="sm" />
-                    <div>
-                      <label className="a-label">Color Classes</label>
-                      <input className="a-input" value={cv.color} onChange={e => updateArrayItem('coreValues', i, 'color', e.target.value)} placeholder="text-blue-600 bg-blue-50" />
-                    </div>
+                    <ColorPicker label="Theme Color" value={cv.color} onChange={v => updateArrayItem('coreValues', i, 'color', v)} />
                   </div>
                 </div>
               </div>
@@ -217,7 +215,9 @@ const AboutEdit = () => {
                   <input className="a-input" value={item.title} onChange={e => updateArrayItem('whatIWorkOn', i, 'title', e.target.value)} placeholder="Title" />
                   <div style={{ display: 'flex', gap: 8 }}>
                     <input className="a-input" value={item.icon} onChange={e => updateArrayItem('whatIWorkOn', i, 'icon', e.target.value)} placeholder="Icon name" style={{ flex: 1 }} />
-                    <input className="a-input" value={item.color} onChange={e => updateArrayItem('whatIWorkOn', i, 'color', e.target.value)} placeholder="Color classes" style={{ flex: 1 }} />
+                    <div style={{ flex: 1 }}>
+                      <ColorPicker value={item.color} onChange={v => updateArrayItem('whatIWorkOn', i, 'color', v)} />
+                    </div>
                   </div>
                   <ImageUpload label="Custom Icon (Override)" value={item.customIconUrl} onChange={v => updateArrayItem('whatIWorkOn', i, 'customIconUrl', v)} size="sm" />
                 </div>

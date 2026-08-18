@@ -6,13 +6,23 @@ export default function ScrollToTop() {
 
   useEffect(() => {
     if (hash) {
-      setTimeout(() => {
-        const id = hash.replace('#', '');
+      const id = hash.replace('#', '');
+      let attempts = 0;
+      
+      const tryScroll = () => {
         const element = document.getElementById(id);
         if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
+          // Wait a tiny bit more for layout to settle, then scroll
+          setTimeout(() => {
+            element.scrollIntoView({ behavior: 'smooth' });
+          }, 100);
+        } else if (attempts < 25) { // Retry for 2.5 seconds (25 * 100ms)
+          attempts++;
+          setTimeout(tryScroll, 100);
         }
-      }, 100);
+      };
+
+      tryScroll();
       return;
     }
     window.scrollTo(0, 0);

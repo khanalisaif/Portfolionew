@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useBackend } from '../../hooks/useBackend';
 import ImageUpload from '../../components/ImageUpload';
-import { Briefcase, Save, ChevronDown, ChevronUp, Plus, Trash2, CheckCircle, Tag, Link2, BarChart3, ShieldCheck, Image as ImageIcon, AlertCircle, Loader2 } from 'lucide-react';
+import { Briefcase, Save, ChevronDown, ChevronUp, Plus, Trash2, CheckCircle, Tag, Link2, BarChart3, ShieldCheck, Image as ImageIcon, AlertCircle, Loader2, Code2 } from 'lucide-react';
 import '../../admin.css';
 
 const ProjectsEdit = () => {
@@ -44,7 +44,7 @@ const ProjectsEdit = () => {
   const updateSection = (f, v) => setSectionData(p => ({ ...p, [f]: v }));
 
   const updateProjectBasic = (id, field, value) => {
-    setProjects(projects.map(p => p.id === id ? { ...p, [field]: value } : p));
+    setProjects(prev => prev.map(p => p.id === id ? { ...p, [field]: value } : p));
     // Sync some fields to details
     if (field === 'name' || field === 'description' || field === 'image' || field === 'tags' || field === 'stats' || field === 'liveUrl' || field === 'storeUrl') {
        const mappedField = field === 'image' ? 'mainImage' : field;
@@ -111,6 +111,22 @@ const ProjectsEdit = () => {
   const removeScreenshot = (pid, sid) => {
     const current = (details[pid]?.screenshots || []).filter((_, i) => i !== sid);
     updateProjectDetail(pid, 'screenshots', current);
+  };
+
+  // Generic List helpers for ProjectDetails arrays
+  const addDetailItem = (pid, field, defaultItem) => {
+    const current = details[pid]?.[field] || [];
+    updateProjectDetail(pid, field, [...current, defaultItem]);
+  };
+  const updateDetailItem = (pid, field, idx, itemField, val) => {
+    const current = [...(details[pid]?.[field] || [])];
+    if (itemField === null) current[idx] = val; // for array of strings
+    else current[idx] = { ...current[idx], [itemField]: val };
+    updateProjectDetail(pid, field, current);
+  };
+  const removeDetailItem = (pid, field, idx) => {
+    const current = (details[pid]?.[field] || []).filter((_, i) => i !== idx);
+    updateProjectDetail(pid, field, current);
   };
 
   const handleSubmit = async (e) => {
@@ -203,9 +219,11 @@ const ProjectsEdit = () => {
                       <select 
                         value={project.featuredType || 'none'} 
                         onChange={e => {
-                          updateProjectBasic(project.id, 'featuredType', e.target.value);
-                          if (e.target.value === 'current') updateProjectBasic(project.id, 'badge', 'Current Project');
-                          else if (e.target.value === 'top') updateProjectBasic(project.id, 'badge', 'Top Rated');
+                          const val = e.target.value;
+                          updateProjectBasic(project.id, 'featuredType', val);
+                          updateProjectBasic(project.id, 'isFeatured', val !== 'none');
+                          if (val === 'current') updateProjectBasic(project.id, 'badge', 'Current Project');
+                          else if (val === 'top') updateProjectBasic(project.id, 'badge', 'Top Rated');
                         }} 
                         className="a-select"
                       >
@@ -232,6 +250,84 @@ const ProjectsEdit = () => {
                   <div className="a-field">
                     <label className="a-label">Detailed Overview (for Details Page)</label>
                     <textarea value={detail.overviewText || ''} onChange={e => updateProjectDetail(project.id, 'overviewText', e.target.value)} rows="3" className="a-textarea" placeholder="Full detailed explanation..." />
+                  </div>
+
+                  {/* Overview Points */}
+                  <div className="a-field">
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+                      <label className="a-label" style={{ marginBottom: 0 }}>Overview Bullet Points</label>
+                      <button type="button" onClick={() => addDetailItem(project.id, 'overviewPoints', '')} className="a-btn a-btn-xs a-btn-ghost-green" style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
+                        <Plus size={12} /> Add Point
+                      </button>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                      {(detail.overviewPoints || []).map((pt, i) => (
+                        <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <span style={{ fontSize: 11, color: '#94a3b8', fontWeight: 700, minWidth: 18, textAlign: 'right' }}>{i + 1}.</span>
+                          <input type="text" value={pt} onChange={e => updateDetailItem(project.id, 'overviewPoints', i, null, e.target.value)} className="a-input" style={{ flex: 1, padding: '7px 10px', fontSize: 13 }} placeholder="Built the core architecture..." />
+                          <button type="button" onClick={() => removeDetailItem(project.id, 'overviewPoints', i)} className="a-btn-icon danger" style={{ width: 28, height: 28, flexShrink: 0 }}><Trash2 size={13} /></button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Meta Table */}
+                  <div className="a-field" style={{ marginTop: 8 }}>
+                    <div className="a-section-divider">
+                      <h3 style={{ display: 'flex', alignItems: 'center', gap: 6 }}><BarChart3 size={13} /> Meta Table</h3>
+                      <button type="button" onClick={() => addDetailItem(project.id, 'metaTable', { label: '', value: '', icon: 'code' })} className="a-btn a-btn-xs a-btn-ghost-green"><Plus size={11} /> Add Meta</button>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                      {(detail.metaTable || []).map((meta, i) => (
+                        <div key={i} className="a-row" style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: 12, background: '#f8fafc', borderRadius: 8, border: '1px solid #e2e8f0' }}>
+                          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: 10 }}>
+                            <input type="text" value={meta.label} onChange={e => updateDetailItem(project.id, 'metaTable', i, 'label', e.target.value)} className="a-input" placeholder="Label (e.g. Role)" />
+                            <input type="text" value={meta.value} onChange={e => updateDetailItem(project.id, 'metaTable', i, 'value', e.target.value)} className="a-input" placeholder="Value (e.g. Full Stack)" />
+                            <button type="button" onClick={() => removeDetailItem(project.id, 'metaTable', i)} className="a-btn-icon danger" style={{ alignSelf: 'flex-start' }}><Trash2 size={13} /></button>
+                          </div>
+                          <ImageUpload label="Icon (URL or Lucide name)" value={meta.icon} onChange={v => updateDetailItem(project.id, 'metaTable', i, 'icon', v)} size="sm" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Highlights */}
+                  <div className="a-field" style={{ marginTop: 8 }}>
+                    <div className="a-section-divider">
+                      <h3 style={{ display: 'flex', alignItems: 'center', gap: 6 }}><CheckCircle size={13} /> Key Highlights</h3>
+                      <button type="button" onClick={() => addDetailItem(project.id, 'highlights', { title: '', desc: '', icon: 'zap' })} className="a-btn a-btn-xs a-btn-ghost-green"><Plus size={11} /> Add Highlight</button>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                      {(detail.highlights || []).map((hl, i) => (
+                        <div key={i} className="a-row" style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 10, padding: 12, background: '#f8fafc', borderRadius: 8, border: '1px solid #e2e8f0' }}>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                            <ImageUpload label="Highlight Icon (URL or Lucide name)" value={hl.icon} onChange={v => updateDetailItem(project.id, 'highlights', i, 'icon', v)} size="sm" />
+                            <input type="text" value={hl.title} onChange={e => updateDetailItem(project.id, 'highlights', i, 'title', e.target.value)} className="a-input" placeholder="Highlight Title" />
+                            <textarea value={hl.desc} onChange={e => updateDetailItem(project.id, 'highlights', i, 'desc', e.target.value)} className="a-textarea" rows="2" placeholder="Highlight Description" />
+                          </div>
+                          <button type="button" onClick={() => removeDetailItem(project.id, 'highlights', i)} className="a-btn-icon danger"><Trash2 size={13} /></button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Tech Stack */}
+                  <div className="a-field" style={{ marginTop: 8 }}>
+                    <div className="a-section-divider">
+                      <h3 style={{ display: 'flex', alignItems: 'center', gap: 6 }}><Code2 size={13} /> Tech Stack</h3>
+                      <button type="button" onClick={() => addDetailItem(project.id, 'techStack', { name: '', icon: '' })} className="a-btn a-btn-xs a-btn-ghost-green"><Plus size={11} /> Add Tech</button>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 8 }}>
+                      {(detail.techStack || []).map((tech, i) => (
+                        <div key={i} className="a-row" style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: 12, background: '#f8fafc', borderRadius: 8, border: '1px solid #e2e8f0' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <input type="text" value={tech.name} onChange={e => updateDetailItem(project.id, 'techStack', i, 'name', e.target.value)} className="a-input" placeholder="Tech Name" style={{ flex: 1, marginRight: 8 }} />
+                            <button type="button" onClick={() => removeDetailItem(project.id, 'techStack', i)} className="a-btn-icon danger" style={{ width: 26, height: 26 }}><Trash2 size={13} /></button>
+                          </div>
+                          <ImageUpload label="Tech Icon URL" value={tech.icon} onChange={v => updateDetailItem(project.id, 'techStack', i, 'icon', v)} size="sm" />
+                        </div>
+                      ))}
+                    </div>
                   </div>
 
                   <div className="a-field">

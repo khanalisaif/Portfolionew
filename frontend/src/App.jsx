@@ -31,6 +31,8 @@ import AboutEdit from './pages/admin/AboutEdit';
 import ExperienceEdit from './pages/admin/ExperienceEdit';
 import CertificatesEdit from './pages/admin/CertificatesEdit';
 import AllEducationEdit from './pages/admin/AllEducationEdit';
+import RouteGuide from './pages/admin/RouteGuide';
+
 function Home() {
   return (
     <main>
@@ -78,6 +80,7 @@ export default function App() {
           <Route path="experience" element={<ExperienceEdit />} />
           <Route path="certificates" element={<CertificatesEdit />} />
           <Route path="all-education" element={<AllEducationEdit />} />
+          <Route path="route-guide" element={<RouteGuide />} />
         </Route>
       </Routes>
     </>
