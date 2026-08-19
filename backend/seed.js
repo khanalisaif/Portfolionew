@@ -16,7 +16,7 @@ const seedData = async () => {
       nameParts: { first: "Admin", last: " User" },
       titles: ["Developer", "Designer"],
       tagline: "Welcome to your new portfolio backend.",
-      hireEmail: process.env.ADMIN_EMAIL || "admin@example.com",
+      hireEmail: (process.env.ADMIN_EMAIL ? process.env.ADMIN_EMAIL.split(',')[0].trim() : "admin@example.com"),
       avatarUrl: "",
     });
 

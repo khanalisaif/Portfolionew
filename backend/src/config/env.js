@@ -19,6 +19,6 @@ export const config = {
     secret: process.env.JWT_SECRET || 'portfolio_super_secret_key_2024',
     expiresIn: process.env.JWT_EXPIRES_IN || '7d'
   },
-  adminEmail: process.env.ADMIN_EMAIL,
+  adminEmails: process.env.ADMIN_EMAIL ? process.env.ADMIN_EMAIL.split(',').map(email => email.trim()) : [],
   frontendUrl: process.env.FRONTEND_URL || 'http://localhost:5173'
 };

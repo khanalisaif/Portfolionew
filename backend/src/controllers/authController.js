@@ -12,14 +12,14 @@ import { config } from '../config/env.js';
 export const requestOtp = asyncHandler(async (req, res) => {
   const { email } = req.body;
 
-  if (email !== config.adminEmail) {
+  if (!config.adminEmails.includes(email)) {
     return res.status(401).json({ message: 'Unauthorized email address' });
   }
 
   let admin = await Admin.findOne({ email });
   
   if (!admin) {
-    // Auto-create admin if it doesn't exist and matches config.adminEmail
+    // Auto-create admin if it doesn't exist and matches config.adminEmails
     admin = await Admin.create({ email });
   }
 
